@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 app.use(helmet()); 
 
 // Configuración de CORS
-const allowedOrigins = [process.env.URL_FRONTEND, process.env.URL_LOCAL]; 
+const allowedOrigins = [process.env.URL_LOCAL]; 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
