@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TI banco de occidente.">
+  <title>Endpoints Bancocci</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #077230;
+      border-bottom: 2px solid #4a90e2;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    details {
+      background-color: #333;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    details summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #F17F21;
+    }
+
+    details summary:hover {
+      color: #ffffff;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      color: #f8f8f8;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    pre {
+      background-color: #333;
+      color: #f2750f;
+      border-left: 4px solid #4a90e2;
+      font-weight: bold;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 3px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      /* Allows text wrapping */
+    }
+
+    code {
+      font-family: monospace;
+      color: #e94e77;
+    }
+
+    /* Cambia el color y el tamaño de la barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 12px;  /* Ancho de la barra vertical */
+  height: 12px; /* Ancho de la barra horizontal (si existe) */
+}
+
+/* Cambia el color del fondo de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+  background-color: #333; /* Fondo del track (el carril de la barra de desplazamiento) */
+}
+
+/* Cambia el color de la parte deslizante (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: #888;  /* Color del thumb (la parte que se mueve) */
+  border-radius: 10px;     /* Redondea las esquinas del thumb */
+  border: 2px solid #f1f1f1; /* Opcional: borde alrededor del thumb para separarlo un poco del track */
+}
+
+/* Cambia el color del thumb cuando se pasa el mouse por encima */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Color del thumb en hover */
+}
+
+  </style>
+</head>
+
+<body>
+  <h1>Endpoints Sistema TI - Bancocci</h1>
+
+  <h2>Endpoints de Actividades</h2>
+  <details>
+    <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ejemplo</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Obtener una lista de todas las estados creados.
+        son
+      </li>
+      <br>
+      <li><strong>Instrucciones:</strong> Utiliza la direccion para obtener los datos de estados.
+      </li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+        GET: api/v1/ejemplo  </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+    [
+        {
+            "id": 1,
+            "nombre": "pendiente"
+        },
+        {
+            "id": 2,
+            "nombre": "en mantenimiento"
+        },
+        ...................
+    ]
+  </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si el valor del parámetro <code>estado</code> no es válido.
+          <pre><code>
+{
+    "error": "datos no encontrado"
+}
+            </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+          <pre><code>
+{
+    "error": "Error al obtener los estados"
+}
+            </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+</body>
+
+</html>
