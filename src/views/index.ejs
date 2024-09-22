@@ -78,35 +78,41 @@
     }
 
     /* Cambia el color y el tamaño de la barra de desplazamiento */
-::-webkit-scrollbar {
-  width: 12px;  /* Ancho de la barra vertical */
-  height: 12px; /* Ancho de la barra horizontal (si existe) */
-}
+    ::-webkit-scrollbar {
+      width: 12px;
+      /* Ancho de la barra vertical */
+      height: 12px;
+      /* Ancho de la barra horizontal (si existe) */
+    }
 
-/* Cambia el color del fondo de la barra de desplazamiento */
-::-webkit-scrollbar-track {
-  background-color: #333; /* Fondo del track (el carril de la barra de desplazamiento) */
-}
+    /* Cambia el color del fondo de la barra de desplazamiento */
+    ::-webkit-scrollbar-track {
+      background-color: #333;
+      /* Fondo del track (el carril de la barra de desplazamiento) */
+    }
 
-/* Cambia el color de la parte deslizante (thumb) */
-::-webkit-scrollbar-thumb {
-  background-color: #888;  /* Color del thumb (la parte que se mueve) */
-  border-radius: 10px;     /* Redondea las esquinas del thumb */
-  border: 2px solid #f1f1f1; /* Opcional: borde alrededor del thumb para separarlo un poco del track */
-}
+    /* Cambia el color de la parte deslizante (thumb) */
+    ::-webkit-scrollbar-thumb {
+      background-color: #888;
+      /* Color del thumb (la parte que se mueve) */
+      border-radius: 10px;
+      /* Redondea las esquinas del thumb */
+      border: 2px solid #f1f1f1;
+      /* Opcional: borde alrededor del thumb para separarlo un poco del track */
+    }
 
-/* Cambia el color del thumb cuando se pasa el mouse por encima */
-::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Color del thumb en hover */
-}
-
+    /* Cambia el color del thumb cuando se pasa el mouse por encima */
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #555;
+      /* Color del thumb en hover */
+    }
   </style>
 </head>
 
 <body>
   <h1>Endpoints Sistema TI - Bancocci</h1>
 
-  <h2>Endpoints de Actividades</h2>
+  <h2>Endpoints de Ejemplo</h2>
   <details>
     <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ejemplo</summary>
     <ul>
@@ -143,7 +149,8 @@
 }
             </code></pre>
         </li>
-        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
           <pre><code>
 {
     "error": "Error al obtener los estados"
@@ -153,6 +160,300 @@
       </ul>
     </ul>
   </details>
+
+  <h2>Endpoints de Autenticacion</h2>
+
+  <!-- POST: endpoint de registro-->
+
+  <details>
+    <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/registro</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Registra un nuevo usuario en el sistema.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Envía los datos del nuevo usuario en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      POST: /api/v1/auth/registro
+      {
+          "nombre": "Juan Pérez",
+          "rol_id": 1,
+          "correo": "ejemplo@gmail.com"
+      }
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "mensaje": "Usuario registrado exitosamente",
+          "usuario": "juanperez",
+          "contraseña": "abc123"
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si faltan campos requeridos o la contraseña no cumple con los
+          requisitos.
+          <pre><code>
+{
+    "error": "Todos los campos son requeridos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al registrar el usuario"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- POST: Login-->
+
+  <details>
+    <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/login</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Inicia sesión en el sistema.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Envía las credenciales del usuario en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      POST: /api/v1/auth/login
+      {
+          "usuario": "juanperez",
+          "contraseña": "abc123"
+      }
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "token": "jwt-token-aqui",
+          "usuario": "juanperez",
+          "rol_id": 1
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>401 Unauthorized:</code></strong> Si el nombre de usuario o la contraseña son incorrectos.
+          <pre><code>
+{
+    "error": "Nombre de usuario o contraseña incorrectos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al iniciar sesión"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- PUT: cambio de contraseña-->
+  <details>
+    <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/cambio-contrasena</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Cambia la contraseña de un usuario autenticado.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para poder modificar la conraseña. Se deben
+        enviar la contraseña actual, la nueva contraseña y su confirmación en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      PUT: /api/v1/auth/cambio-contrasena
+      Headers: {
+          Authorization: "Bearer jwt-token-aqui"
+      }
+      {
+        "contraseñaActual": "miContraseñaActual123",
+        "nuevaContraseña": "NuevaContraseña456!",
+        "confirmarContraseña": "NuevaContraseña456!"
+      }
+      
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "mensaje": "Contraseña actualizada exitosamente"
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si faltan campos o las contraseñas no cumplen con los
+          requisitos.
+          <pre><code>
+{
+    "error": "Ambos campos son requeridos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
+          <pre><code>
+          {
+            "error": "La contraseña actual es incorrecta"
+          }
+          
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al cambiar la contraseña"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <h2>Endpoints de Roles</h2>
+
+  <!-- GET: Obtener todos los roles -->
+  <details>
+    <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/roles</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Obtiene una lista de todos los roles existentes en la base de datos.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Utiliza este endpoint para obtener todos los roles.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+GET: /api/v1/roles
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+[
+    {
+        "id": 1,
+        "descripcion": "Administrador"
+    },
+    {
+        "id": 2,
+        "descripcion": "Usuario"
+    }
+]
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>500 Internal Server Error:</code></strong> Si ocurre un error en la base de datos o el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al obtener los roles"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- POST: Crear un nuevo rol -->
+  <details>
+    <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/roles</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Crea un nuevo rol en la base de datos.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Utiliza este endpoint enviando un objeto JSON con la descripción del rol a
+        crear.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+POST: /api/v1/roles
+Body:
+{
+    "descripcion": "Gerente"
+}
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+{
+    "message": "Rol creado exitosamente",
+    "id": 3
+}
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si el campo <code>descripcion</code> no es válido o está
+          vacío.
+          <pre><code>
+{
+    "error": "Descripción es requerida"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> Si ocurre un error en la base de datos o el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al crear el rol"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- PUT: Actualizar un rol existente -->
+  <details>
+    <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/roles/:id</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Actualiza la descripción de un rol existente.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Utiliza este endpoint enviando un objeto JSON con la nueva descripción del rol
+        a actualizar.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+PUT: /api/v1/roles/1
+Body:
+{
+    "descripcion": "Super Administrador"
+}
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+{
+    "message": "Rol actualizado exitosamente"
+}
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si el campo <code>descripcion</code> está vacío.
+          <pre><code>
+{
+    "error": "Descripción es requerida"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>404 Not Found:</code></strong> Si no se encuentra el rol con el ID proporcionado.
+          <pre><code>
+{
+    "error": "Rol no encontrado"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> Si ocurre un error en la base de datos o el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al actualizar el rol"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+
 </body>
 
 </html>
