@@ -19,7 +19,6 @@ import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorial
 import { actualizarDetalleEquipo, crearDetalleEquipo, obtenerDetalleEquipo } from '../controllers/detalleEquipoController';
 import { actualizarControlEquipo, crearControlEquipo, obtenerControlEquipo } from '../controllers/controlEquipoController';
 
-
 const router: Router = Router();
 
 // Rutas de autenticación
@@ -57,6 +56,33 @@ router.get('/estado_tecnicos', getEstadoTecnico);
 router.post('/estado_tecnicos', crearEstadoTecnico);
 router.put('/estado_tecnicos/:id', actualizarEstadoTecnico);
 
+// Rutas de Estado UPS
+router.get('/estado_ups', getEstadoUps);
+router.post('/estado_ups', crearEstadoUps);
+router.put('/estado_ups/:id', actualizarEstadoUps);
+
+// Rutas de Tipo Inventario
+router.get('/tipo_inventarios', getTipoInventario);
+router.post('/tipo_inventarios', crearTipoInventario);
+router.put('/tipo_inventarios/:id', actualizarTipoInventario);
+
+// Rutas de Estado UPS
+router.get('/empleados', getEmpleados);
+router.post('/empleados', crearEmpleado);
+router.put('/empleados/:id', actualizarEmpleado);
+router.delete('/empleados/:id', eliminarEmpleado);
+
+// Rutas de Estado UPS
+router.get('/tecnicos', getTecnicos);
+router.get('/tecnicos/:id', getTecnicoPorId);
+router.post('/tecnicos', crearTecnico);
+router.put('/tecnicos/:id', actualizarTecnico);
+router.delete('/tecnicos/:id', eliminarTecnico);
+
+// Rutas de detalle solicitud
+router.get('/detalle-solicitud', getDetallesSolicitud);
+router.post('/detalle-solicitud', crearDetalleSolicitud);
+router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
 // Rutas para historial_cambio_ups
 router.get('/historial_cambio_ups', obtenerHistorialCambioUPS);  
