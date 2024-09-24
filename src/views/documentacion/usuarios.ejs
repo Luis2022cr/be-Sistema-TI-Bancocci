@@ -1,0 +1,121 @@
+<!-- Endpoint de Usuarios   -->
+
+<h2> Endpoint de Usuarios </h2>
+
+<!-- GET: Obtener perfil de usuario -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios/perfil</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene el perfil de un usuario específico, incluyendo nombre, correo, usuario, y rol.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para obtener los detalles de perfil. El ID del usuario debe ser proporcionado como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/usuarios/perfil
+    Headers: {
+        Authorization: "Bearer jwt-token-aqui"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+    {
+        "nombre": "Juan Perez",
+        "correo": "juan.perez@email.com",
+        "usuario": "jperez",
+        "rol": "admin"
+    }
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si el ID no es válido o no está presente.
+        <pre><code>
+{
+    "error": "ID de usuario no válido"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
+        <pre><code>
+{
+    "error": "No autorizado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el usuario con el ID proporcionado no existe.
+        <pre><code>
+{
+    "error": "Usuario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener el perfil del usuario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+
+<!-- PUT: Editar perfil de usuario -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios/perfil</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza el perfil de un usuario, permitiendo modificar el nombre y el correo.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para poder modificar su perfil. Solo el nombre y el correo pueden ser editados, y deben enviarse en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/usuarios/perfil
+    Headers: {
+        Authorization: "Bearer jwt-token-aqui"
+    }
+    {
+      "nombre": "Juan Carlos Perez",
+      "correo": "juan.c.perez@email.com"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+    {
+        "mensaje": "Perfil actualizado exitosamente"
+    }
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos o el formato del correo no es válido.
+        <pre><code>
+{
+    "error": "El nombre y el correo son requeridos"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
+        <pre><code>
+{
+    "error": "No autorizado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el usuario con el ID proporcionado no existe.
+        <pre><code>
+{
+    "error": "Usuario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el perfil"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

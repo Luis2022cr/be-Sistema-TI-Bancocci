@@ -1,0 +1,154 @@
+<h2>Endpoints de Autenticacion</h2>
+
+  <!-- POST: endpoint de registro-->
+
+  <details>
+    <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/registro</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Registra un nuevo usuario en el sistema.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Envía los datos del nuevo usuario en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      POST: /api/v1/auth/registro
+      {
+          "nombre": "Juan Pérez",
+          "rol_id": 1,
+          "correo": "ejemplo@gmail.com"
+      }
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "mensaje": "Usuario registrado exitosamente",
+          "usuario": "juanperez",
+          "contraseña": "abc123"
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si faltan campos requeridos o la contraseña no cumple con los
+          requisitos.
+          <pre><code>
+{
+    "error": "Todos los campos son requeridos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al registrar el usuario"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- POST: Login-->
+
+  <details>
+    <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/login</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Inicia sesión en el sistema.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> Envía las credenciales del usuario en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      POST: /api/v1/auth/login
+      {
+          "usuario": "juanperez",
+          "contraseña": "abc123"
+      }
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "token": "jwt-token-aqui",
+          "usuario": "juanperez",
+          "rol_id": 1
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>401 Unauthorized:</code></strong> Si el nombre de usuario o la contraseña son incorrectos.
+          <pre><code>
+{
+    "error": "Nombre de usuario o contraseña incorrectos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al iniciar sesión"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+
+  <!-- PUT: cambio de contraseña-->
+  <details>
+    <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/auth/cambio-contrasena</summary>
+    <ul>
+      <li><strong>Descripción:</strong> Cambia la contraseña de un usuario autenticado.</li>
+      <br>
+      <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para poder modificar la conraseña. Se deben
+        enviar la contraseña actual, la nueva contraseña y su confirmación en el cuerpo de la solicitud.</li>
+      <br>
+      <li><strong>Ejemplo de solicitud:</strong></li>
+      <pre>
+      PUT: /api/v1/auth/cambio-contrasena
+      Headers: {
+          Authorization: "Bearer jwt-token-aqui"
+      }
+      {
+        "contraseñaActual": "miContraseñaActual123",
+        "nuevaContraseña": "NuevaContraseña456!",
+        "confirmarContraseña": "NuevaContraseña456!"
+      }
+      
+    </pre>
+      <li><strong>Ejemplo de respuesta:</strong></li>
+      <pre>
+      {
+          "mensaje": "Contraseña actualizada exitosamente"
+      }
+    </pre>
+      <li><strong>Errores posibles:</strong></li>
+      <ul>
+        <li><strong><code>400 Bad Request:</code></strong> Si faltan campos o las contraseñas no cumplen con los
+          requisitos.
+          <pre><code>
+{
+    "error": "Ambos campos son requeridos"
+}
+        </code></pre>
+        </li>
+        <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
+          <pre><code>
+          {
+            "error": "La contraseña actual es incorrecta"
+          }
+          
+        </code></pre>
+        </li>
+        <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el
+          servidor.
+          <pre><code>
+{
+    "error": "Error al cambiar la contraseña"
+}
+        </code></pre>
+        </li>
+      </ul>
+    </ul>
+  </details>
+

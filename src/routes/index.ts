@@ -1,6 +1,5 @@
 // index.ts
 import { Router } from 'express';
-import { getEjemplo } from '../controllers/ejemploController';
 // Seguridad: Solo las personas autenticada pueden usar ese recurso:
 import { authenticateJWT } from '../middlewares/authMiddleware'; //ejemplo de uso= router.get('/ejemplo', authenticateJWT, getEjemplo);
 import { registro, login, cambiarContraseña } from '../controllers/authController';
@@ -18,6 +17,13 @@ import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud
 import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
 import { actualizarDetalleEquipo, crearDetalleEquipo, obtenerDetalleEquipo } from '../controllers/detalleEquipoController';
 import { actualizarControlEquipo, crearControlEquipo, obtenerControlEquipo } from '../controllers/controlEquipoController';
+import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario } from '../controllers/usuarioController';
+import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
+import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
+import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios } from '../controllers/directorioController';
+import { getUps, getUpsPorId, crearUps, actualizarUps, eliminarUps } from '../controllers/upsController';
+import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario } from '../controllers/inventariosController';
+
 
 const router: Router = Router();
 
@@ -25,6 +31,12 @@ const router: Router = Router();
 router.post('/auth/registro', registro);
 router.post('/auth/login', login);
 router.put('/auth/cambio-contrasena',authenticateJWT, cambiarContraseña);
+
+// rutas para Usuarios
+router.get('/perfil/usuario',authenticateJWT, getPerfilUsuario);
+router.put('/perfil/usuario',authenticateJWT, actualizarPerfilUsuario);
+router.get('/usuarios', getUsuarios);
+router.put('/usuarios/:id', actualizarDatosUsuario);
 
 // Rutas de Roles
 router.get('/roles', getRoles);
@@ -77,7 +89,7 @@ router.get('/tecnicos', getTecnicos);
 router.get('/tecnicos/:id', getTecnicoPorId);
 router.post('/tecnicos', crearTecnico);
 router.put('/tecnicos/:id', actualizarTecnico);
-router.delete('/tecnicos/:id', eliminarTecnico);
+router.patch('/tecnicos/:id/estado', eliminarTecnico);
 
 // Rutas de detalle solicitud
 router.get('/detalle-solicitud', getDetallesSolicitud);
@@ -96,11 +108,38 @@ router.put('/detalle_equipo/:id', actualizarDetalleEquipo);
 
 // Rutas para control_equipo
 router.get('/control_equipo', obtenerControlEquipo);  
-router.post('/control_equipo', crearControlEquipo);   
-router.put('/control_equipo/:id', actualizarControlEquipo); 
+router.post('/control_equipo',authenticateJWT, crearControlEquipo);   
+router.put('/control_equipo/:id',authenticateJWT, actualizarControlEquipo); 
 
+// Rutas de Estado Agencias
+router.get('/estado_agencias', getEstadoAgencias);
+router.post('/estado_agencias', crearEstadoAgencias);
+router.put('/estado_agencias/:id', actualizarEstadoAgencias);
 
-//Endponit de Ejemplo
-router.get('/ejemplo', getEjemplo);
+// Rutas de Estado Agencias
+router.get('/agencias', getAgencias);
+router.post('/agencias', crearAgencias);
+router.put('/agencias/:id', actualizarAgencias);
+router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
+
+// Rutas de Estado Agencias
+router.get('/directorios', getDirectorios);
+router.post('/directorios', crearDirectorio);
+router.put('/directorios/:id', actualizarDirectorio);
+router.delete('/directorios/:id', eliminarDirectorio);
+
+// Rutas de UPS
+router.get('/ups', getUps);
+router.get('/ups/:id', getUpsPorId); 
+router.post('/ups', crearUps);
+router.put('/ups/:id', actualizarUps);
+router.patch('/ups/:id/estado', eliminarUps);
+
+// Rutas de Inventarios
+router.get('/inventarios', getInventarios);
+router.get('/inventarios/:id', getInventarioPorId);
+router.post('/inventarios',authenticateJWT, crearInventario);
+router.put('/inventarios/:id',authenticateJWT, actualizarInventario);
+router.patch('/inventarios/:id/estado', eliminarInventario);
 
 export default router;
