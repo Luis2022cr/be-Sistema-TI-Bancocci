@@ -10,6 +10,11 @@ import { actualizarTipoTamano, crearTipoTamano, getTipoTamano } from '../control
 import { actualizarMarca, crearMarca, getMarca } from '../controllers/marcaController';
 import { actualizarEstado, crearEstado, getEstado } from '../controllers/estadoController';
 import { actualizarEstadoTecnico, crearEstadoTecnico, getEstadoTecnico } from '../controllers/estadoTecnicoController';
+import { actualizarEstadoUps, crearEstadoUps, getEstadoUps } from '../controllers/estadoUpsController';
+import { actualizarTipoInventario, crearTipoInventario, getTipoInventario } from '../controllers/tipoInventarioController';
+import { actualizarEmpleado, crearEmpleado, eliminarEmpleado, getEmpleados } from '../controllers/empleadosController';
+import { actualizarTecnico, crearTecnico, eliminarTecnico, getTecnicoPorId, getTecnicos } from '../controllers/TecnicoController';
+import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/TecnicoController copy';
 
 const router: Router = Router();
 
@@ -48,6 +53,33 @@ router.get('/estado_tecnicos', getEstadoTecnico);
 router.post('/estado_tecnicos', crearEstadoTecnico);
 router.put('/estado_tecnicos/:id', actualizarEstadoTecnico);
 
+// Rutas de Estado UPS
+router.get('/estado_ups', getEstadoUps);
+router.post('/estado_ups', crearEstadoUps);
+router.put('/estado_ups/:id', actualizarEstadoUps);
+
+// Rutas de Tipo Inventario
+router.get('/tipo_inventarios', getTipoInventario);
+router.post('/tipo_inventarios', crearTipoInventario);
+router.put('/tipo_inventarios/:id', actualizarTipoInventario);
+
+// Rutas de Estado UPS
+router.get('/empleados', getEmpleados);
+router.post('/empleados', crearEmpleado);
+router.put('/empleados/:id', actualizarEmpleado);
+router.delete('/empleados/:id', eliminarEmpleado);
+
+// Rutas de Estado UPS
+router.get('/tecnicos', getTecnicos);
+router.get('/tecnicos/:id', getTecnicoPorId);
+router.post('/tecnicos', crearTecnico);
+router.put('/tecnicos/:id', actualizarTecnico);
+router.delete('/tecnicos/:id', eliminarTecnico);
+
+// Rutas de detalle solicitud
+router.get('/detalle-solicitud', getDetallesSolicitud);
+router.post('/detalle-solicitud', crearDetalleSolicitud);
+router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
 //Endponit de Ejemplo
 router.get('/ejemplo', getEjemplo);
