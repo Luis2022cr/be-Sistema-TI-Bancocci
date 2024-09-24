@@ -10,9 +10,7 @@ const pool = mysql.createPool({
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE,
-  waitForConnections: true,
-  connectionLimit: 50,
-  queueLimit: 0
+  waitForConnections: true
 });
 
 // Función para verificar la conexión
@@ -26,7 +24,6 @@ const checkConnection = async () => {
     }
   };
   
-  checkConnection();
+checkConnection();
 
-// Exporta la conexión para que pueda ser utilizada en otras partes de la aplicación
 export default pool;

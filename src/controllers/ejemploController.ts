@@ -4,14 +4,16 @@ import pool from '../database/mysql';
 export const getEjemplo = async (req: Request, res: Response): Promise<void> => {
     try {
         // Realizamos la consulta con un JOIN para obtener los datos de agencias y sus estados
-        const [agenciasConEstados]= await pool.query(`
+        const consulta = `
             SELECT a.id, a.nombre, a.ubicacion, a.codigo, e.nombre AS estado
             FROM agencias a
             JOIN estado_agencias e ON a.estado_agencias_id = e.id;
-        `);
+        `
+
+        const [agenciasConEstados]= await pool.query(consulta);
 
         // Verificamos si la consulta devolvió resultados
-        if (agenciasConEstados) {
+        if (agenciasConEstados) { 
             res.status(200).json(agenciasConEstados );
         } else {
             res.status(400).json({ error: 'No se obtuvieron datos de la base de datos' });

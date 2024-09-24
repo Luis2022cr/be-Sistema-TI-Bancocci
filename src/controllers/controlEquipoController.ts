@@ -14,9 +14,11 @@ export const obtenerControlEquipo = async (req: Request, res: Response): Promise
 
 export const crearControlEquipo = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, usuario_id, observacion } = req.body;
+        const userId = (req as any).user?.id; // ID del usuario autenticado
 
-        if (!fecha || !tecnico_id || !agencias_id || !detalle_solicitud_id || !detalle_equipo_id || !usuario_id) {
+        const { fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, observacion } = req.body;
+
+        if (!fecha || !tecnico_id || !agencias_id || !detalle_solicitud_id || !detalle_equipo_id || !userId) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -26,7 +28,7 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
         const [agencia]: any = await pool.query('SELECT id FROM agencias WHERE id = ?', [agencias_id]);
         const [solicitud]: any = await pool.query('SELECT id FROM detalle_solicitud WHERE id = ?', [detalle_solicitud_id]);
         const [equipo] : any= await pool.query('SELECT id FROM detalle_equipo WHERE id = ?', [detalle_equipo_id]);
-        const [usuario] : any= await pool.query('SELECT id FROM usuario WHERE id = ?', [usuario_id]);
+        const [usuario] : any= await pool.query('SELECT id FROM usuario WHERE id = ?', [userId]);
 
         if (tecnico.length === 0) {
             res.status(404).json({ error: 'Técnico no válido' });
@@ -50,7 +52,7 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
         }
 
         await pool.query('INSERT INTO control_equipo (fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, usuario_id, observacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-            [fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, usuario_id, observacion]);
+            [fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, userId, observacion]);
 
         res.status(201).json({ message: 'Control de equipo creado exitosamente' });
     } catch (error) {
@@ -62,9 +64,11 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
 export const actualizarControlEquipo = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, usuario_id, observacion } = req.body;
+        const userId = (req as any).user?.id; // ID del usuario autenticado
 
-        if (!fecha || !tecnico_id || !agencias_id || !detalle_solicitud_id || !detalle_equipo_id || !usuario_id) {
+        const { fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, observacion } = req.body;
+
+        if (!fecha || !tecnico_id || !agencias_id || !detalle_solicitud_id || !detalle_equipo_id || !userId) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -74,7 +78,7 @@ export const actualizarControlEquipo = async (req: Request, res: Response): Prom
         const [agencia] : any= await pool.query('SELECT id FROM agencias WHERE id = ?', [agencias_id]);
         const [solicitud] : any= await pool.query('SELECT id FROM detalle_solicitud WHERE id = ?', [detalle_solicitud_id]);
         const [equipo]: any = await pool.query('SELECT id FROM detalle_equipo WHERE id = ?', [detalle_equipo_id]);
-        const [usuario] : any= await pool.query('SELECT id FROM usuario WHERE id = ?', [usuario_id]);
+        const [usuario] : any= await pool.query('SELECT id FROM usuario WHERE id = ?', [userId]);
 
         if (tecnico.length === 0) {
             res.status(404).json({ error: 'Técnico no válido' });
@@ -99,7 +103,7 @@ export const actualizarControlEquipo = async (req: Request, res: Response): Prom
 
         const [result]: any = await pool.query(
             'UPDATE control_equipo SET fecha = ?, tecnico_id = ?, agencias_id = ?, n_ticket_mesa_ayuda = ?, zona_region = ?, detalle_solicitud_id = ?, detalle_equipo_id = ?, usuario_id = ?, observacion = ? WHERE id = ?', 
-            [fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, usuario_id, observacion, id]
+            [fecha, tecnico_id, agencias_id, n_ticket_mesa_ayuda, zona_region, detalle_solicitud_id, detalle_equipo_id, userId, observacion, id]
         );
 
         if (result.affectedRows > 0) {
