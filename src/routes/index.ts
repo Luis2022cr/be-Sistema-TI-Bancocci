@@ -14,7 +14,10 @@ import { actualizarEstadoUps, crearEstadoUps, getEstadoUps } from '../controller
 import { actualizarTipoInventario, crearTipoInventario, getTipoInventario } from '../controllers/tipoInventarioController';
 import { actualizarEmpleado, crearEmpleado, eliminarEmpleado, getEmpleados } from '../controllers/empleadosController';
 import { actualizarTecnico, crearTecnico, eliminarTecnico, getTecnicoPorId, getTecnicos } from '../controllers/TecnicoController';
-import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/TecnicoController copy';
+import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/detalleSolicitudController';
+import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
+import { actualizarDetalleEquipo, crearDetalleEquipo, obtenerDetalleEquipo } from '../controllers/detalleEquipoController';
+import { actualizarControlEquipo, crearControlEquipo, obtenerControlEquipo } from '../controllers/controlEquipoController';
 
 const router: Router = Router();
 
@@ -80,6 +83,22 @@ router.delete('/tecnicos/:id', eliminarTecnico);
 router.get('/detalle-solicitud', getDetallesSolicitud);
 router.post('/detalle-solicitud', crearDetalleSolicitud);
 router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
+
+// Rutas para historial_cambio_ups
+router.get('/historial_cambio_ups', obtenerHistorialCambioUPS);  
+router.post('/historial_cambio_ups', crearHistorialCambioUPS);    
+router.put('/historial_cambio_ups/:id', actualizarHistorialCambioUPS); 
+
+// Rutas para detalle_equipo
+router.get('/detalle_equipo', obtenerDetalleEquipo);  
+router.post('/detalle_equipo', crearDetalleEquipo);   
+router.put('/detalle_equipo/:id', actualizarDetalleEquipo); 
+
+// Rutas para control_equipo
+router.get('/control_equipo', obtenerControlEquipo);  
+router.post('/control_equipo', crearControlEquipo);   
+router.put('/control_equipo/:id', actualizarControlEquipo); 
+
 
 //Endponit de Ejemplo
 router.get('/ejemplo', getEjemplo);
