@@ -1,40 +1,28 @@
 import { Connection } from 'mysql2/promise';
 
-// Función para insertar los roles
+// Función para insertar roles solo si no existen
 export const insertRolesIfNotExists = async (connection: Connection) => {
-  // Verificar qué roles existen
+  // Roles que queremos verificar e insertar
+  const rolesToCheck = ['admin', 'empleado', 'inactivo'];
+
+  // Verificar cuántos de los roles ya existen
   const checkRolesSQL = `
-    SELECT descripcion FROM rol WHERE descripcion IN ('admin', 'empleado', 'inactivo');
+    SELECT COUNT(*) as count FROM rol WHERE descripcion IN (${rolesToCheck.map(() => '?').join(', ')});
   `;
 
-  // Ejecutar consulta para verificar roles existentes
-  const [existingRoles]: any = await connection.query(checkRolesSQL);
+  // Ejecutar consulta para verificar los roles existentes
+  const [rows]: any = await connection.query(checkRolesSQL, rolesToCheck);
 
-  // Crear una lista de los roles que faltan
-  const existingRolesList = existingRoles.map((role: any) => role.descripcion);
-
-  const rolesToInsert = [];
-
-  if (!existingRolesList.includes('admin')) {
-    rolesToInsert.push('admin');
-  }
-
-  if (!existingRolesList.includes('empleado')) {
-    rolesToInsert.push('empleado');
-  }
-
-  if (!existingRolesList.includes('inactivo')) {
-    rolesToInsert.push('inactivo');
-  }
-
-  // Insertar solo los roles faltantes
-  if (rolesToInsert.length > 0) {
+  // Si no hay roles existentes, proceder a insertarlos
+  if (rows[0].count === 0) {
     const insertRolesSQL = `
-      INSERT INTO rol (descripcion) VALUES ${rolesToInsert.map(() => '(?)').join(', ')};
+      INSERT INTO rol (descripcion) VALUES 
+      ${rolesToCheck.map(() => '(?)').join(', ')};
     `;
-    await connection.query(insertRolesSQL, rolesToInsert);
-    console.log('Roles insertados:', rolesToInsert);
+
+    await connection.query(insertRolesSQL, rolesToCheck);
+    console.log('Roles insertados:', rolesToCheck);
   } else {
-    console.log('Todos los roles existen.');
+    console.log('Algunos roles ya existen, no se realizará la inserción.');
   }
 };

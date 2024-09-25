@@ -16,7 +16,7 @@ import { actualizarTecnico, crearTecnico, eliminarTecnico, getTecnicoPorId, getT
 import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/detalleSolicitudController';
 import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
 import { actualizarDetalleEquipo, crearDetalleEquipo, obtenerDetalleEquipo } from '../controllers/detalleEquipoController';
-import { actualizarControlEquipo, crearControlEquipo, obtenerControlEquipo } from '../controllers/controlEquipoController';
+import { actualizarControlEquipo, crearControlEquipo, getControlEquiposConDetalles } from '../controllers/controlEquipoController';
 import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario } from '../controllers/usuarioController';
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
@@ -73,12 +73,22 @@ router.get('/estado_ups', getEstadoUps);
 router.post('/estado_ups', crearEstadoUps);
 router.put('/estado_ups/:id', actualizarEstadoUps);
 
+// Rutas de Estado Agencias
+router.get('/estado_agencias', getEstadoAgencias);
+router.post('/estado_agencias', crearEstadoAgencias);
+router.put('/estado_agencias/:id', actualizarEstadoAgencias);
+
 // Rutas de Tipo Inventario
 router.get('/tipo_inventarios', getTipoInventario);
 router.post('/tipo_inventarios', crearTipoInventario);
 router.put('/tipo_inventarios/:id', actualizarTipoInventario);
 
-// Rutas de Estado UPS
+// Rutas de detalle solicitud
+router.get('/detalle-solicitud', getDetallesSolicitud);
+router.post('/detalle-solicitud', crearDetalleSolicitud);
+router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
+
+// Rutas de Estado empleado
 router.get('/empleados', getEmpleados);
 router.post('/empleados', crearEmpleado);
 router.put('/empleados/:id', actualizarEmpleado);
@@ -91,30 +101,11 @@ router.post('/tecnicos', crearTecnico);
 router.put('/tecnicos/:id', actualizarTecnico);
 router.patch('/tecnicos/:id/estado', eliminarTecnico);
 
-// Rutas de detalle solicitud
-router.get('/detalle-solicitud', getDetallesSolicitud);
-router.post('/detalle-solicitud', crearDetalleSolicitud);
-router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
 // Rutas para historial_cambio_ups
 router.get('/historial_cambio_ups', obtenerHistorialCambioUPS);  
 router.post('/historial_cambio_ups', crearHistorialCambioUPS);    
 router.put('/historial_cambio_ups/:id', actualizarHistorialCambioUPS); 
-
-// Rutas para detalle_equipo
-router.get('/detalle_equipo', obtenerDetalleEquipo);  
-router.post('/detalle_equipo', crearDetalleEquipo);   
-router.put('/detalle_equipo/:id', actualizarDetalleEquipo); 
-
-// Rutas para control_equipo
-router.get('/control_equipo', obtenerControlEquipo);  
-router.post('/control_equipo',authenticateJWT, crearControlEquipo);   
-router.put('/control_equipo/:id',authenticateJWT, actualizarControlEquipo); 
-
-// Rutas de Estado Agencias
-router.get('/estado_agencias', getEstadoAgencias);
-router.post('/estado_agencias', crearEstadoAgencias);
-router.put('/estado_agencias/:id', actualizarEstadoAgencias);
 
 // Rutas de Estado Agencias
 router.get('/agencias', getAgencias);
@@ -122,7 +113,17 @@ router.post('/agencias', crearAgencias);
 router.put('/agencias/:id', actualizarAgencias);
 router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
 
-// Rutas de Estado Agencias
+// Rutas para detalle_equipo
+router.get('/detalle_equipo', obtenerDetalleEquipo);  
+router.post('/detalle_equipo', crearDetalleEquipo);   
+router.put('/detalle_equipo/:id', actualizarDetalleEquipo); 
+
+// Rutas para control_equipo
+router.get('/control_equipo', getControlEquiposConDetalles);  
+router.post('/control_equipo',authenticateJWT, crearControlEquipo);   
+router.put('/control_equipo/:id',authenticateJWT, actualizarControlEquipo); 
+
+// Rutas de Estado directorios
 router.get('/directorios', getDirectorios);
 router.post('/directorios', crearDirectorio);
 router.put('/directorios/:id', actualizarDirectorio);

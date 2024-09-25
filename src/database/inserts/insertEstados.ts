@@ -1,44 +1,28 @@
 import { Connection } from 'mysql2/promise';
 
-// Función para insertar los estados de agencia
+// Función para insertar los estados solo si no existen
 export const insertEstadoIfNotExists = async (connection: Connection) => {
-  // Verificar qué estados existen
+  // Nombres de los estados que queremos verificar e insertar
+  const estadosToCheck = ['reparado', 'mantenimiento', 'reparacion', 'malo'];
+
+  // Verificar cuántos de los estados ya existen
   const checkEstadosSQL = `
-    SELECT nombre FROM estado WHERE nombre IN ('reparado', 'mantenimiento', 'reparacion', 'malo');
+    SELECT COUNT(*) as count FROM estado WHERE nombre IN (${estadosToCheck.map(() => '?').join(', ')});
   `;
 
   // Ejecutar consulta para verificar los estados existentes
-  const [existingEstados]: any = await connection.query(checkEstadosSQL);
+  const [rows]:any = await connection.query(checkEstadosSQL, estadosToCheck);
 
-  // Crear una lista de los estados que faltan
-  const existingEstadosList = existingEstados.map((estado: any) => estado.nombre);
-
-  const estadosToInsert = [];
-
-  if (!existingEstadosList.includes('reparado')) {
-    estadosToInsert.push('reparado');
-  }
-
-  if (!existingEstadosList.includes('mantenimiento')) {
-    estadosToInsert.push('mantenimiento');
-  }
-
-  if (!existingEstadosList.includes('reparacion')) {
-    estadosToInsert.push('reparacion');
-  }
-
-  if (!existingEstadosList.includes('malo')) {
-    estadosToInsert.push('malo');
-  }
-
-  // Insertar solo los estados faltantes
-  if (estadosToInsert.length > 0) {
+  // Si no hay estados existentes, proceder a insertarlos
+  if (rows[0].count === 0) {
     const insertEstadosSQL = `
-      INSERT INTO estado (nombre) VALUES ${estadosToInsert.map(() => '(?)').join(', ')};
+      INSERT INTO estado (nombre) VALUES 
+      ${estadosToCheck.map(() => '(?)').join(', ')};
     `;
-    await connection.query(insertEstadosSQL, estadosToInsert);
-    console.log('Estados de invetarios insertados:', estadosToInsert);
+
+    await connection.query(insertEstadosSQL, estadosToCheck);
+    console.log('Estados de inventarios insertados:', estadosToCheck);
   } else {
-    console.log('Todos los estados de inventarios ya existen.');
+    console.log('Algunos estados de inventarios ya existen, no se realizará la inserción.');
   }
 };
