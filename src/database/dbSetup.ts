@@ -1,9 +1,15 @@
+import { insertAgencias } from "./inserts/insertAgencias";
+import { insertDepartamentos } from "./inserts/insertDepartamentos";
+import { insertDetalleSolicitudIfNotExists } from "./inserts/insertDetallesolicitud";
 import { insertEstadoAgenciasIfNotExists } from "./inserts/insertEstadoAgencias";
 import { insertEstadoIfNotExists } from "./inserts/insertEstados";
 import { insertEstadoTecnicoIfNotExists } from "./inserts/insertEstadoTecnico";
 import { insertEstadoUpsIfNotExists } from "./inserts/insertEstadoUps";
+import { insertMarcaIfNotExists } from "./inserts/insertMarcas";
 import { insertRolesIfNotExists } from "./inserts/insertRoles";
+import { insertTipoInventarioIfNotExists } from "./inserts/insertTipoInventario";
 import { insertTipoTamanoIfNotExists } from "./inserts/insertTipoTamano";
+import { insertAdminIfNotExists } from "./inserts/insertUsuario";
 import pool from "./mysql";
 
 const crearTablasEnLaBaseDeDatos = async () => {
@@ -182,7 +188,6 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 n_ticket_mesa_ayuda INT,
                 zona_region VARCHAR(250),
                 detalle_solicitud_id INT,
-                detalle_equipo_id INT,
                 usuario_id INT,
                 observacion VARCHAR(500),
                 fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -190,8 +195,15 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 FOREIGN KEY (tecnico_id) REFERENCES tecnico(id),
                 FOREIGN KEY (agencias_id) REFERENCES agencias(id),
                 FOREIGN KEY (detalle_solicitud_id) REFERENCES detalle_solicitud(id),
-                FOREIGN KEY (detalle_equipo_id) REFERENCES detalle_equipo(id),
                 FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+            );`,
+
+            `CREATE TABLE IF NOT EXISTS control_equipo_detalle (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                control_equipo_id INT,
+                detalle_equipo_id INT,
+                FOREIGN KEY (control_equipo_id) REFERENCES control_equipo(id),
+                FOREIGN KEY (detalle_equipo_id) REFERENCES detalle_equipo(id)
             );`
         ];
 
@@ -213,6 +225,18 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertEstadoTecnicoIfNotExists(connection);
         //Insert estado_ups
         await insertEstadoUpsIfNotExists(connection);
+        //Insert detalle_solicitud
+        await insertDetalleSolicitudIfNotExists(connection);
+        //Insert tipo_inventario
+        await insertTipoInventarioIfNotExists(connection);
+        //Insert marcas
+        await insertMarcaIfNotExists(connection);
+        //Insert Admin
+        await insertAdminIfNotExists(connection);
+        //Insert departamentos
+        await insertDepartamentos(connection);
+         //Insert Agencias 
+         await insertAgencias(connection);
 
         connection.release();
 

@@ -1,40 +1,28 @@
 import { Connection } from 'mysql2/promise';
 
-// Función para insertar los estados de agencia
+// Función para insertar los estados de UPS solo si no existen
 export const insertEstadoUpsIfNotExists = async (connection: Connection) => {
-  // Verificar qué estados existen
+  // Nombres de los estados que queremos verificar e insertar
+  const estadosToCheck = ['activo', 'prestado', 'inactivo'];
+
+  // Verificar cuántos de los estados ya existen
   const checkEstadosSQL = `
-    SELECT nombre FROM estado_ups WHERE nombre IN ('activo', 'prestado', 'inactivo');
+    SELECT COUNT(*) as count FROM estado_ups WHERE nombre IN (${estadosToCheck.map(() => '?').join(', ')});
   `;
 
   // Ejecutar consulta para verificar los estados existentes
-  const [existingEstados]: any = await connection.query(checkEstadosSQL);
+  const [rows]:any = await connection.query(checkEstadosSQL, estadosToCheck);
 
-  // Crear una lista de los estados que faltan
-  const existingEstadosList = existingEstados.map((estado: any) => estado.nombre);
-
-  const estadosToInsert = [];
-
-  if (!existingEstadosList.includes('activo')) {
-    estadosToInsert.push('activo');
-  }
-
-  if (!existingEstadosList.includes('inactivo')) {
-    estadosToInsert.push('inactivo');
-  }
-
-  if (!existingEstadosList.includes('prestado')) {
-    estadosToInsert.push('prestado');
-  }
-
-  // Insertar solo los estados faltantes
-  if (estadosToInsert.length > 0) {
+  // Si no hay estados existentes, proceder a insertarlos
+  if (rows[0].count === 0) {
     const insertEstadosSQL = `
-      INSERT INTO estado_ups (nombre) VALUES ${estadosToInsert.map(() => '(?)').join(', ')};
+      INSERT INTO estado_ups (nombre) VALUES 
+      ${estadosToCheck.map(() => '(?)').join(', ')};
     `;
-    await connection.query(insertEstadosSQL, estadosToInsert);
-    console.log('Estados de ups insertados:', estadosToInsert);
+
+    await connection.query(insertEstadosSQL, estadosToCheck);
+    console.log('Estados de UPS insertados:', estadosToCheck);
   } else {
-    console.log('Todos los estados de ups ya existen.');
+    console.log('Algunos estados de UPS ya existen, no se realizará la inserción.');
   }
 };
