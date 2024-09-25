@@ -1,0 +1,147 @@
+<h2>Endpoint de Historial de Cambios de UPS</h2>
+
+<!-- GET: Obtener historial de cambios de UPS -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/historial_cambio_ups</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los cambios realizados en los UPS.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve un listado de historial de cambios de UPS.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/historial_cambio_ups
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "ups_id": 1,
+        "cambio": "Instalación de batería nueva",
+        "fecha_instalacion": "2024-01-15",
+        "proximo_cambio": "2025-01-15"
+    },
+    {
+        "id": 2,
+        "ups_id": 2,
+        "cambio": "Reemplazo de componentes",
+        "fecha_instalacion": "2024-03-10",
+        "proximo_cambio": "2025-03-10"
+    }
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener el historial de cambios de UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear un nuevo historial de cambio de UPS -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/historial_cambio_ups</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea un nuevo registro en el historial de cambios de UPS.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con los datos requeridos.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/historial_cambio_ups
+    Body: {
+        "ups_id": 1,
+        "cambio": "Instalación de batería nueva",
+        "fecha_instalacion": "2024-01-15",
+        "proximo_cambio": "2025-01-15"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Historial de cambio de UPS creado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos obligatorios.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el `ups_id` no es válido.
+        <pre><code>
+{
+    "error": "UPS no válido"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear el historial de cambios de UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar un historial de cambio de UPS existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/historial_cambio_ups/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza un registro existente en el historial de cambios de UPS.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del historial como parámetro en la URL y enviar los datos actualizados en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/historial_cambio_ups/1
+    Body: {
+        "ups_id": 1,
+        "cambio": "Reemplazo de batería",
+        "fecha_instalacion": "2024-01-20",
+        "proximo_cambio": "2025-01-20"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Historial de cambio de UPS actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos obligatorios.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el historial de cambio no existe o si el `ups_id` no es válido.
+        <pre><code>
+{
+    "error": "Historial de cambio de UPS no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el historial de cambios de UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

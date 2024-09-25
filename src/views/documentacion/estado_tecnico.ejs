@@ -1,0 +1,128 @@
+<h2>Endpoint de Estado Técnico</h2>
+
+<!-- GET: Obtener todos los estados técnicos -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/estado_tecnicos</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los estados técnicos.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve una lista de estados técnicos.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/estado_tecnicos
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "nombre": "Operativo"
+    },
+    {
+        "id": 2,
+        "nombre": "No operativo"
+    }
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener los estados"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear un nuevo estado técnico -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/estado_tecnicos</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea un nuevo estado técnico.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con el nombre del estado técnico.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/estado_tecnicos
+    Body: {
+        "nombre": "En mantenimiento"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Estado creado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta el campo nombre.
+        <pre><code>
+{
+    "error": "Nombre es requerido"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear el estado"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar un estado técnico existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/estado_tecnicos/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza un estado técnico existente.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del estado técnico como parámetro en la URL y enviar los datos actualizados en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/estado_tecnicos/1
+    Body: {
+        "nombre": "Operativo"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Estado actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta el campo nombre.
+        <pre><code>
+{
+    "error": "Nombre es requerido"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el estado técnico no existe.
+        <pre><code>
+{
+    "error": "Estado no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el estado"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

@@ -5,11 +5,10 @@ import pool from '../database/mysql';
 export const getDirectorios = async (req: Request, res: Response): Promise<void> => {
     try {
         const [directorios] = await pool.query(`
-            SELECT d.id, d.extension, dep.nombre AS departamento, ag.nombre AS agencia, emp.nombre AS empleado
+            SELECT d.id, d.extension, d.empleado, dep.nombre AS departamento, ag.nombre AS agencia
             FROM directorios d
             JOIN departamentos dep ON d.departamento_id = dep.id
             JOIN agencias ag ON d.agencias_id = ag.id
-            JOIN empleados emp ON d.empleado_id = emp.id
         `);
         res.status(200).json(directorios);
     } catch (error) {

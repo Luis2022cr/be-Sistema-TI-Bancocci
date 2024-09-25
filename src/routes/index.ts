@@ -11,12 +11,10 @@ import { actualizarEstado, crearEstado, getEstado } from '../controllers/estadoC
 import { actualizarEstadoTecnico, crearEstadoTecnico, getEstadoTecnico } from '../controllers/estadoTecnicoController';
 import { actualizarEstadoUps, crearEstadoUps, getEstadoUps } from '../controllers/estadoUpsController';
 import { actualizarTipoInventario, crearTipoInventario, getTipoInventario } from '../controllers/tipoInventarioController';
-import { actualizarEmpleado, crearEmpleado, eliminarEmpleado, getEmpleados } from '../controllers/empleadosController';
 import { actualizarTecnico, crearTecnico, eliminarTecnico, getTecnicoPorId, getTecnicos } from '../controllers/TecnicoController';
 import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/detalleSolicitudController';
 import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
-import { actualizarDetalleEquipo, crearDetalleEquipo, obtenerDetalleEquipo } from '../controllers/detalleEquipoController';
-import { actualizarControlEquipo, crearControlEquipo, getControlEquiposConDetalles } from '../controllers/controlEquipoController';
+import {  crearControlEquipo, getControlEquiposConDetalles, getControlEquiposConDetallesID } from '../controllers/controlEquipoController';
 import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario } from '../controllers/usuarioController';
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
@@ -59,9 +57,9 @@ router.post('/marcas', crearMarca);
 router.put('/marcas/:id', actualizarMarca);
 
 // Rutas de Estado
-router.get('/estados', getEstado);
-router.post('/estados', crearEstado);
-router.put('/estados/:id', actualizarEstado);
+router.get('/estados_inventarios', getEstado);
+router.post('/estados_inventarios', crearEstado);
+router.put('/estados_inventarios/:id', actualizarEstado);
 
 // Rutas de Estado Tecnico
 router.get('/estado_tecnicos', getEstadoTecnico);
@@ -88,12 +86,6 @@ router.get('/detalle-solicitud', getDetallesSolicitud);
 router.post('/detalle-solicitud', crearDetalleSolicitud);
 router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
-// Rutas de Estado empleado
-router.get('/empleados', getEmpleados);
-router.post('/empleados', crearEmpleado);
-router.put('/empleados/:id', actualizarEmpleado);
-router.delete('/empleados/:id', eliminarEmpleado);
-
 // Rutas de Estado UPS
 router.get('/tecnicos', getTecnicos);
 router.get('/tecnicos/:id', getTecnicoPorId);
@@ -113,15 +105,11 @@ router.post('/agencias', crearAgencias);
 router.put('/agencias/:id', actualizarAgencias);
 router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
 
-// Rutas para detalle_equipo
-router.get('/detalle_equipo', obtenerDetalleEquipo);  
-router.post('/detalle_equipo', crearDetalleEquipo);   
-router.put('/detalle_equipo/:id', actualizarDetalleEquipo); 
 
 // Rutas para control_equipo
 router.get('/control_equipo', getControlEquiposConDetalles);  
+router.get('/control_equipo/:id', getControlEquiposConDetallesID);  
 router.post('/control_equipo',authenticateJWT, crearControlEquipo);   
-router.put('/control_equipo/:id',authenticateJWT, actualizarControlEquipo); 
 
 // Rutas de Estado directorios
 router.get('/directorios', getDirectorios);

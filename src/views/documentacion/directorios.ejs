@@ -1,0 +1,192 @@
+<h2>Endpoint de Directorios</h2>
+
+<!-- GET: Obtener todos los directorios -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/directorios</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los directorios, incluyendo el nombre de departamento, agencia y empleado.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve una lista de directorios.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/directorios
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "extension": ".jpg",
+        "departamento": "IT",
+        "agencia": "Agencia A",
+        "empleado": "Juan Pérez"
+    },
+    {
+        "id": 2,
+        "extension": ".pdf",
+        "departamento": "Recursos Humanos",
+        "agencia": "Agencia B",
+        "empleado": "María López"
+    }
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener los directorios"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear un nuevo directorio -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/directorios</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea un nuevo directorio con una extensión única.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con la extensión, departamento_id, agencias_id y empleado_id.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/directorios
+    Body: {
+        "extension": ".docx",
+        "departamento_id": 1,
+        "agencias_id": 2,
+        "empleado_id": 3
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Directorio creado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta algún campo requerido.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>400 Bad Request:</code></strong> Si la extensión ya existe.
+        <pre><code>
+{
+    "error": "La extensión ya existe. Debe ser única."
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear el directorio"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar un directorio existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/directorios/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza un directorio existente con una extensión única.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del directorio como parámetro en la URL y enviar los datos actualizados en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/directorios/1
+    Body: {
+        "extension": ".xlsx",
+        "departamento_id": 1,
+        "agencias_id": 2,
+        "empleado_id": 3
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Directorio actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta algún campo requerido.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el directorio no existe.
+        <pre><code>
+{
+    "error": "Directorio no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>400 Bad Request:</code></strong> Si la extensión ya existe en otro directorio.
+        <pre><code>
+{
+    "error": "La extensión ya existe. Debe ser única."
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el directorio"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- DELETE: Eliminar un directorio -->
+<details>
+  <summary>DELETE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/directorios/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Elimina un directorio existente.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del directorio como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    DELETE: /api/v1/directorios/1
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Directorio eliminado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si el directorio no existe.
+        <pre><code>
+{
+    "error": "Directorio no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al eliminar el directorio"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

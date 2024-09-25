@@ -1,48 +1,29 @@
-<!-- Endpoint de Usuarios   -->
+<h2>Endpoint de Usuarios</h2>
 
-<h2> Endpoint de Usuarios </h2>
-
-<!-- GET: Obtener perfil de usuario -->
+<!-- GET: Obtener el perfil de un usuario -->
 <details>
-  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios/perfil</summary>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/perfil/usuario</summary>
   <ul>
-    <li><strong>Descripción:</strong> Obtiene el perfil de un usuario específico, incluyendo nombre, correo, usuario, y rol.</li>
+    <li><strong>Descripción:</strong> Obtiene el perfil del usuario autenticado.</li>
     <br>
-    <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para obtener los detalles de perfil. El ID del usuario debe ser proporcionado como parámetro en la URL.</li>
+    <li><strong>Instrucciones:</strong> Se requiere autenticación mediante JWT. No se requieren parámetros adicionales.</li>
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre>
-    GET: /api/v1/usuarios/perfil
-    Headers: {
-        Authorization: "Bearer jwt-token-aqui"
-    }
+    GET: /api/v1/perfil/usuario
     </pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre>
-    {
-        "nombre": "Juan Perez",
-        "correo": "juan.perez@email.com",
-        "usuario": "jperez",
-        "rol": "admin"
-    }
+{
+    "nombre": "Juan Pérez",
+    "correo": "juan.perez@example.com",
+    "usuario": "juanp",
+    "rol": "Administrador"
+}
     </pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
-      <li><strong><code>400 Bad Request:</code></strong> Si el ID no es válido o no está presente.
-        <pre><code>
-{
-    "error": "ID de usuario no válido"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
-        <pre><code>
-{
-    "error": "No autorizado"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>404 Not Found:</code></strong> Si el usuario con el ID proporcionado no existe.
+      <li><strong><code>404 Not Found:</code></strong> Si el usuario no existe.
         <pre><code>
 {
     "error": "Usuario no encontrado"
@@ -60,49 +41,38 @@
   </ul>
 </details>
 
-
-<!-- PUT: Editar perfil de usuario -->
+<!-- PUT: Editar el perfil de un usuario -->
 <details>
-  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios/perfil</summary>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/perfil/usuario</summary>
   <ul>
-    <li><strong>Descripción:</strong> Actualiza el perfil de un usuario, permitiendo modificar el nombre y el correo.</li>
+    <li><strong>Descripción:</strong> Actualiza el perfil del usuario autenticado.</li>
     <br>
-    <li><strong>Instrucciones:</strong> El usuario debe estar autenticado para poder modificar su perfil. Solo el nombre y el correo pueden ser editados, y deben enviarse en el cuerpo de la solicitud.</li>
+    <li><strong>Instrucciones:</strong> Se requiere autenticación mediante JWT. Debe enviarse un JSON en el cuerpo de la solicitud con los campos a actualizar.</li>
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre>
-    PUT: /api/v1/usuarios/perfil
-    Headers: {
-        Authorization: "Bearer jwt-token-aqui"
-    }
-    {
-      "nombre": "Juan Carlos Perez",
-      "correo": "juan.c.perez@email.com"
+    PUT: /api/v1/perfil/usuario
+    Body: {
+        "nombre": "Juan Pérez Actualizado",
+        "correo": "juan.perez.actualizado@example.com"
     }
     </pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre>
-    {
-        "mensaje": "Perfil actualizado exitosamente"
-    }
+{
+    "message": "Perfil actualizado exitosamente"
+}
     </pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
-      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos o el formato del correo no es válido.
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos requeridos.
         <pre><code>
 {
-    "error": "El nombre y el correo son requeridos"
+    "error": "Nombre y correo son requeridos"
 }
         </code></pre>
       </li>
-      <li><strong><code>401 Unauthorized:</code></strong> Si el token JWT no es válido o no está presente.
-        <pre><code>
-{
-    "error": "No autorizado"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>404 Not Found:</code></strong> Si el usuario con el ID proporcionado no existe.
+      <li><strong><code>404 Not Found:</code></strong> Si el usuario no existe.
         <pre><code>
 {
     "error": "Usuario no encontrado"
@@ -112,7 +82,97 @@
       <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
         <pre><code>
 {
-    "error": "Error al actualizar el perfil"
+    "error": "Error al actualizar el perfil del usuario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- GET: Obtener todos los usuarios -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los usuarios registrados.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/usuarios
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "nombre": "Juan Pérez",
+        "correo": "juan.perez@example.com",
+        "usuario": "juanp",
+        "fecha_creacion": "2023-01-01 10:00:00",
+        "fecha_modificacion": "2023-02-01 11:00:00",
+        "rol": "Administrador"
+    },
+    ...
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener el perfil del usuario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Editar datos de un usuario -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/usuarios/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza los datos de un usuario específico.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Debe enviarse el ID del usuario como parámetro en la URL y un JSON con los campos a actualizar.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/usuarios/1
+    Body: {
+        "nombre": "Juan Pérez Actualizado",
+        "correo": "juan.perez.actualizado@example.com",
+        "rol_id": 2
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Perfil actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos requeridos.
+        <pre><code>
+{
+    "error": "Nombre y correo son requeridos"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el usuario no existe.
+        <pre><code>
+{
+    "error": "Usuario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el perfil del usuario"
 }
         </code></pre>
       </li>

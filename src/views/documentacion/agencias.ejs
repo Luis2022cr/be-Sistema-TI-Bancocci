@@ -1,0 +1,177 @@
+<h2> Endpoint de Agencias </h2>
+
+<!-- GET: Obtener todas las agencias -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/agencias</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todas las agencias, incluyendo información como nombre, ubicación, código y estado.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requiere autenticación ni parámetros adicionales para acceder a esta información.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/agencias
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+    [
+        {
+            "id": 1,
+            "nombre": "Agencia Central",
+            "ubicacion": "Calle 123, Ciudad",
+            "codigo": "AG001",
+            "estado_agencias_id": 1
+        },
+        {
+            "id": 2,
+            "nombre": "Agencia Norte",
+            "ubicacion": "Avenida 456, Ciudad",
+            "codigo": "AG002",
+            "estado_agencias_id": 2
+        }
+    ]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener las agencias"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear una nueva agencia -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/agencias</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea una nueva agencia con los datos proporcionados: nombre, ubicación, código, y estado.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con los campos requeridos.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/agencias
+    Body: {
+        "nombre": "Agencia Sur",
+        "ubicacion": "Calle 789, Ciudad",
+        "codigo": "AG003",
+        "estado_agencias_id": 1
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Agencia creada exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos en la solicitud.
+        <pre><code>
+{
+    "error": "Todos los datos son requeridos"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear la agencia"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar una agencia -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/agencias/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza los datos de una agencia existente según su ID.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON con los campos actualizados. El ID de la agencia se pasa como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/agencias/1
+    Body: {
+        "nombre": "Agencia Central Actualizada",
+        "ubicacion": "Calle 1234, Ciudad",
+        "codigo": "AG001"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Agencia actualizada exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos en la solicitud.
+        <pre><code>
+{
+    "error": "Todos los datos son requeridos"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si la agencia con el ID proporcionado no existe.
+        <pre><code>
+{
+    "error": "Agencia no encontrada"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar la agencia"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PATCH: Actualizar solo el estado de una agencia -->
+<details>
+  <summary>PATCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/agencias/:id/estado</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza únicamente el estado de una agencia específica.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> El ID de la agencia se debe pasar como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PATCH: /api/v1/agencias/1/estado
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Estado de la agencia actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si la agencia con el ID proporcionado no existe.
+        <pre><code>
+{
+    "error": "Agencia no encontrada"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el estado de la agencia"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

@@ -1,0 +1,128 @@
+<h2>Endpoint de Detalle de Solicitud</h2>
+
+<!-- GET: Obtener todos los detalles de solicitud -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/detalle-solicitud</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los detalles de solicitud registrados en la base de datos.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve una lista de detalles de solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/detalle-solicitud
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "nombre": "Solicitud de mantenimiento"
+    },
+    {
+        "id": 2,
+        "nombre": "Solicitud de soporte técnico"
+    }
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener los detalles de la solicitud"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear un nuevo detalle de solicitud -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/detalle-solicitud</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea un nuevo detalle de solicitud en la base de datos.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con el nombre del detalle.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/detalle-solicitud
+    Body: {
+        "nombre": "Solicitud de recursos"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Detalle de solicitud creado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si no se proporciona el nombre del detalle.
+        <pre><code>
+{
+    "error": "El nombre es obligatorio"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear el detalle de solicitud"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar un detalle de solicitud existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/detalle-solicitud/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza el nombre de un detalle de solicitud existente.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del detalle de solicitud como parámetro en la URL y enviar el nuevo nombre en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/detalle-solicitud/1
+    Body: {
+        "nombre": "Solicitud de soporte"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Detalle de solicitud actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si no se proporciona el nombre.
+        <pre><code>
+{
+    "error": "El nombre es obligatorio"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el detalle de solicitud no existe.
+        <pre><code>
+{
+    "error": "Detalle de solicitud no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el detalle de solicitud"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

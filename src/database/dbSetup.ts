@@ -1,6 +1,7 @@
 import { insertAgencias } from "./inserts/insertAgencias";
 import { insertDepartamentos } from "./inserts/insertDepartamentos";
 import { insertDetalleSolicitudIfNotExists } from "./inserts/insertDetallesolicitud";
+import { insertDirectorios } from "./inserts/insertDirectorio";
 import { insertEstadoAgenciasIfNotExists } from "./inserts/insertEstadoAgencias";
 import { insertEstadoIfNotExists } from "./inserts/insertEstados";
 import { insertEstadoTecnicoIfNotExists } from "./inserts/insertEstadoTecnico";
@@ -70,11 +71,6 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 descripcion VARCHAR(250)
             );`,
 
-            `CREATE TABLE IF NOT EXISTS empleados (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nombre VARCHAR(250)
-            );`,
-
             `CREATE TABLE IF NOT EXISTS agencias (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(50),
@@ -109,12 +105,11 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 extension INT,
                 departamento_id INT,
                 agencias_id INT,
-                empleado_id INT,
+                empleado VARCHAR(150),
                 FOREIGN KEY (departamento_id) REFERENCES departamentos(id),
-                FOREIGN KEY (agencias_id) REFERENCES agencias(id),
-                FOREIGN KEY (empleado_id) REFERENCES empleados(id)
+                FOREIGN KEY (agencias_id) REFERENCES agencias(id)
             );`,
-
+ 
             `CREATE TABLE IF NOT EXISTS ups (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 agencias_id INT,
@@ -237,6 +232,8 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertDepartamentos(connection);
          //Insert Agencias 
          await insertAgencias(connection);
+         //Insert directorio 
+         await insertDirectorios(connection);
 
         connection.release();
 

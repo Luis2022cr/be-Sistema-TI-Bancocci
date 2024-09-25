@@ -1,0 +1,258 @@
+<h2>Endpoint de UPS</h2>
+
+<!-- GET: Obtener todas las UPS -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todas las UPS registradas.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve un listado completo de UPS.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/ups
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "nombre": "UPS 1",
+        "modelo": "Modelo A",
+        "direccion_ip": "192.168.1.1",
+        "kva": 10,
+        "fecha_instalacion": "2023-01-01",
+        "años_uso": 1,
+        "proximo_cambio": "2024-01-01",
+        "modulos": 2,
+        "baterias": 8,
+        "observacion": "Sin observaciones",
+        "agencia": "Agencia A",
+        "estado_ups": "Operativa",
+        "tipo_tamano": "Mediano"
+    },
+    ...
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener las UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- GET: Obtener UPS por ID -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene la información de una UPS específica por su ID.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/ups/1
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "id": 1,
+    "nombre": "UPS 1",
+    "modelo": "Modelo A",
+    "direccion_ip": "192.168.1.1",
+    "kva": 10,
+    "fecha_instalacion": "2023-01-01",
+    "años_uso": 1,
+    "proximo_cambio": "2024-01-01",
+    "modulos": 2,
+    "baterias": 8,
+    "observacion": "Sin observaciones",
+    "agencia": "Agencia A",
+    "estado_ups": "Operativa",
+    "tipo_tamano": "Mediano"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
+        <pre><code>
+{
+    "error": "UPS no encontrada"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener la UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear una nueva UPS -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea una nueva UPS.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con todos los campos requeridos.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/ups
+    Body: {
+        "nombre": "UPS 2",
+        "modelo": "Modelo B",
+        "direccion_ip": "192.168.1.2",
+        "kva": 15,
+        "fecha_instalacion": "2023-02-01",
+        "años_uso": 1,
+        "proximo_cambio": "2024-02-01",
+        "modulos": 3,
+        "baterias": 12,
+        "agencias_id": 1,
+        "estado_ups_id": 1,
+        "tipo_tamano_id": 2,
+        "observacion": "Observaciones adicionales"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "UPS creada exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>400 Bad Request:</code></strong> Si el estado o tipo de tamaño proporcionado no existe.
+        <pre><code>
+{
+    "error": "El estado proporcionado no existe"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear la UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar una UPS existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza una UPS existente.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS como parámetro en la URL y enviar el JSON con los campos actualizados.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/ups/1
+    Body: {
+        "nombre": "UPS 1 Actualizada",
+        "modelo": "Modelo A",
+        "direccion_ip": "192.168.1.1",
+        "kva": 10,
+        "fecha_instalacion": "2023-01-01",
+        "años_uso": 1,
+        "proximo_cambio": "2024-01-01",
+        "modulos": 2,
+        "baterias": 8,
+        "agencias_id": 1,
+        "estado_ups_id": 1,
+        "tipo_tamano_id": 2,
+        "observacion": "Observaciones actualizadas"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "UPS actualizada exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
+        <pre><code>
+{
+    "error": "UPS no encontrada"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar la UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PATCH: Eliminar (cambiar estado) una UPS -->
+<details>
+  <summary>PATCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id/estado</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Cambia el estado de una UPS a inactiva.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PATCH: /api/v1/ups/1
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "UPS marcada como inactiva exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
+        <pre><code>
+{
+    "error": "UPS no encontrada"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al inactivar la UPS"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+

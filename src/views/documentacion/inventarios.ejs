@@ -1,0 +1,261 @@
+<h2>Endpoint de Inventarios</h2>
+
+<!-- GET: Obtener todos los inventarios -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/inventarios</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene una lista de todos los inventarios registrados.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve un listado completo de inventarios.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/inventarios
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+[
+    {
+        "id": 1,
+        "codigo": "INV001",
+        "serie": "ABC123",
+        "modelo": "Modelo X",
+        "comentarios": "Comentarios sobre el inventario",
+        "fecha_creacion": "2024-01-01",
+        "fecha_modificacion": "2024-01-02",
+        "tipo_inventario": "Tipo A",
+        "marca": "Marca X",
+        "agencia_origen": "Agencia A",
+        "agencia_actual": "Agencia B",
+        "estado": "Activo",
+        "usuario": "Usuario A"
+    },
+    {
+        "id": 2,
+        "codigo": "INV002",
+        "serie": "DEF456",
+        "modelo": "Modelo Y",
+        "comentarios": "Otro comentario",
+        "fecha_creacion": "2024-01-05",
+        "fecha_modificacion": "2024-01-06",
+        "tipo_inventario": "Tipo B",
+        "marca": "Marca Y",
+        "agencia_origen": "Agencia C",
+        "agencia_actual": "Agencia D",
+        "estado": "Activo",
+        "usuario": "Usuario B"
+    }
+]
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener los inventarios"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- GET: Obtener inventario por ID -->
+<details>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/inventarios/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Obtiene un inventario específico por su ID.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del inventario en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    GET: /api/v1/inventarios/1
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "id": 1,
+    "codigo": "INV001",
+    "serie": "ABC123",
+    "modelo": "Modelo X",
+    "comentarios": "Comentarios sobre el inventario",
+    "fecha_creacion": "2024-01-01",
+    "fecha_modificacion": "2024-01-02",
+    "tipo_inventario": "Tipo A",
+    "marca": "Marca X",
+    "agencia_origen": "Agencia A",
+    "agencia_actual": "Agencia B",
+    "estado": "Activo",
+    "usuario": "Usuario A"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si el inventario no existe.
+        <pre><code>
+{
+    "error": "Inventario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al obtener el inventario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- POST: Crear un nuevo inventario -->
+<details>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/inventarios</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Crea un nuevo inventario.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con los datos requeridos.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    POST: /api/v1/inventarios
+    Body: {
+        "codigo": "INV003",
+        "serie": "GHI789",
+        "tipo_inventario_id": 1,
+        "marca_id": 2,
+        "modelo": "Modelo Z",
+        "agencias_id_origen": 1,
+        "agencias_id_actual": 2,
+        "estado_id": 1,
+        "comentarios": "Nuevo inventario"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Inventario creado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos obligatorios.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>400 Bad Request:</code></strong> Si el ID de tipo, marca, estado o usuario no es válido.
+        <pre><code>
+{
+    "error": "ID de tipo, marca, estado o usuario no válido"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al crear el inventario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PUT: Actualizar un inventario existente -->
+<details>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/inventarios/:id</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Actualiza un inventario existente.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del inventario como parámetro en la URL y enviar los datos actualizados en el cuerpo de la solicitud.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PUT: /api/v1/inventarios/1
+    Body: {
+        "codigo": "INV001",
+        "serie": "XYZ987",
+        "tipo_inventario_id": 1,
+        "marca_id": 2,
+        "modelo": "Modelo A",
+        "agencias_id_origen": 1,
+        "agencias_id_actual": 2,
+        "estado_id": 1,
+        "comentarios": "Inventario actualizado"
+    }
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Inventario actualizado exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>400 Bad Request:</code></strong> Si faltan campos obligatorios.
+        <pre><code>
+{
+    "error": "Todos los campos son obligatorios"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>404 Not Found:</code></strong> Si el inventario no existe.
+        <pre><code>
+{
+    "error": "Inventario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al actualizar el inventario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>
+
+<!-- PATCH: Eliminar (cambiar estado) un inventario -->
+<details>
+  <summary>PATCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/inventarios/:id/estado</summary>
+  <ul>
+    <li><strong>Descripción:</strong> Cambia el estado de un inventario a inactivo.</li>
+    <br>
+    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del inventario como parámetro en la URL.</li>
+    <br>
+    <li><strong>Ejemplo de solicitud:</strong></li>
+    <pre>
+    PATCH: /api/v1/inventarios/1
+    </pre>
+    <li><strong>Ejemplo de respuesta:</strong></li>
+    <pre>
+{
+    "message": "Inventario marcado como inactivo exitosamente"
+}
+    </pre>
+    <li><strong>Errores posibles:</strong></li>
+    <ul>
+      <li><strong><code>404 Not Found:</code></strong> Si el inventario no existe.
+        <pre><code>
+{
+    "error": "Inventario no encontrado"
+}
+        </code></pre>
+      </li>
+      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+        <pre><code>
+{
+    "error": "Error al inactivar el inventario"
+}
+        </code></pre>
+      </li>
+    </ul>
+  </ul>
+</details>

@@ -113,8 +113,25 @@
 
   <!-- Incluir los diferentes grupos de endpoints -->
   <%- include('documentacion/usuarios') %>
-    <%- include('documentacion/auth') %>
-      <%- include('documentacion/roles') %>
+    <%- include('documentacion/roles') %>
+      <%- include('documentacion/auth') %>
+        <%- include('documentacion/estado_agencias') %>
+          <%- include('documentacion/estados_inventarios') %>
+            <%- include('documentacion/estado_tecnico') %>
+              <%- include('documentacion/estado_ups') %>
+                <%- include('documentacion/tipo_inventarios') %>
+                  <%- include('documentacion/tipo_tamano') %>
+                    <%- include('documentacion/departamentos') %>
+                      <%- include('documentacion/detalle_solicitud') %>
+                        <%- include('documentacion/agencias') %>
+                          <%- include('documentacion/directorios') %>
+                            <%- include('documentacion/empleados') %>
+                              <%- include('documentacion/historial_cambio_ups') %>
+                                <%- include('documentacion/marcas') %>
+                                  <%- include('documentacion/tecnicos') %>
+                                    <%- include('documentacion/ups') %>
+                                      <%- include('documentacion/inventarios') %>
+                                        <%- include('documentacion/control_equipo') %>
 </body>
 
 </html>
