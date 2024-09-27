@@ -8,6 +8,7 @@ import { insertEstadoTecnicoIfNotExists } from "./inserts/insertEstadoTecnico";
 import { insertEstadoUpsIfNotExists } from "./inserts/insertEstadoUps";
 import { insertMarcaIfNotExists } from "./inserts/insertMarcas";
 import { insertRolesIfNotExists } from "./inserts/insertRoles";
+import { insertTecnicos } from "./inserts/insertTecnicos";
 import { insertTipoInventarioIfNotExists } from "./inserts/insertTipoInventario";
 import { insertTipoTamanoIfNotExists } from "./inserts/insertTipoTamano";
 import { insertAdminIfNotExists } from "./inserts/insertUsuario";
@@ -234,6 +235,8 @@ const crearTablasEnLaBaseDeDatos = async () => {
          await insertAgencias(connection);
          //Insert directorio 
          await insertDirectorios(connection);
+         //Insert directorio 
+         await insertTecnicos(connection);
 
         connection.release();
 
