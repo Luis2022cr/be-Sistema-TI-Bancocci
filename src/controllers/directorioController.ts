@@ -32,7 +32,6 @@ export const getDirectoriosById = async (req: Request, res: Response): Promise<v
         res.status(500).json({ error: 'Error al obtener los directorios' });
     }
 };
-
 // Crear un nuevo directorio con validación de extensión única
 export const crearDirectorio = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -44,6 +43,11 @@ export const crearDirectorio = async (req: Request, res: Response): Promise<void
             return;
         }
 
+         // Validar que la extensión sea un número y tenga una longitud máxima de 6 dígitos
+         if (typeof extension !== 'number' || extension.toString().length > 6) {
+            res.status(400).json({ error: 'La extensión debe ser un número de hasta 6 dígitos' });
+            return;
+        }
         // Verificar si la extensión ya existe
         const [existeExtension]: any = await pool.query('SELECT * FROM directorios WHERE extension = ?', [extension]);
         if (existeExtension.length > 0) {
@@ -74,7 +78,11 @@ export const actualizarDirectorio = async (req: Request, res: Response): Promise
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
-
+        // Validar que la extensión sea un número y tenga una longitud máxima de 6 dígitos
+        if ( extension.toString().length > 6) {
+            res.status(400).json({ error: 'La extensión debe ser un número de hasta 6 dígitos' });
+            return;
+        }
         // Verificar si la extensión ya existe en otro directorio
         const [existeExtension]: any = await pool.query(`
             SELECT * FROM directorios WHERE extension = ? AND id != ?`, [extension, id]
