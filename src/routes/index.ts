@@ -18,7 +18,7 @@ import {  crearControlEquipo, getControlEquiposConDetalles, getControlEquiposCon
 import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario } from '../controllers/usuarioController';
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
-import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios } from '../controllers/directorioController';
+import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
 import { getUps, getUpsPorId, crearUps, actualizarUps, eliminarUps } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario } from '../controllers/inventariosController';
 
@@ -113,6 +113,7 @@ router.post('/control_equipo',authenticateJWT, crearControlEquipo);
 
 // Rutas de Estado directorios
 router.get('/directorios', getDirectorios);
+router.get('/directorios/:id', getDirectoriosById);
 router.post('/directorios', crearDirectorio);
 router.put('/directorios/:id', actualizarDirectorio);
 router.delete('/directorios/:id', eliminarDirectorio);

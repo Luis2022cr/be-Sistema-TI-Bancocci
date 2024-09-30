@@ -6,7 +6,7 @@ export const insertTecnicos = async (connection: Connection) => {
     const tecnicos = [
       { nombre: 'Victor Josue Dubon', numero_identidad: 100050, estado_id: 1 },   // Jefe de Taller
       { nombre: 'Nicky Josue Ramos', numero_identidad: 100051, estado_id: 1 },    // Taller 1
-      { nombre: 'Alan Delcil Flores', numero_identidad: 100052, estado_id: 1 },   // Taller 2
+      { nombre: 'Alan Flores Delcil', numero_identidad: 100052, estado_id: 1 },   // Taller 2
       { nombre: 'Jenry Alberto Castellanos', numero_identidad: 100053, estado_id: 1 } // Taller 3
     ];
   

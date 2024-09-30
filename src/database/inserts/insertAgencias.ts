@@ -8,6 +8,7 @@ export const insertAgencias = async (connection: Connection) => {
     { nombre: 'Ag. Santa Teresa', codigo: '109', ubicacion: 'Santa Rosa de Copán', estado_agencias_id: 1 },
     { nombre: 'Ag. Corquín Copán', codigo: '110', ubicacion: 'Corquín', estado_agencias_id: 1 },
     { nombre: 'Ag. Terminal', codigo: '111', ubicacion: 'Santa Rosa de Copán', estado_agencias_id: 1 },
+    { nombre: 'TI 111', codigo: '111', ubicacion: 'Santa Rosa de Copán', estado_agencias_id: 1 },
     { nombre: 'Ag. Dulce Nombre', codigo: '113', ubicacion: 'Dulce Nombre', estado_agencias_id: 1 },
     { nombre: 'Ag. Cucuyagua', codigo: '114', ubicacion: 'Cucuyagua', estado_agencias_id: 1 },
     { nombre: 'Ag. Lepaera Lempira', codigo: '121', ubicacion: 'Lepaera', estado_agencias_id: 1 },

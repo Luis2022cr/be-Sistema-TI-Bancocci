@@ -31,6 +31,8 @@ export const insertDepartamentos = async (connection: Connection) => {
     'Preboveda',
     'NOC',
     'Jefe de Taller',
+    'Taller',
+    'Jefe Soporte Técnico',
     'Soporte Técnico',
     'Usuarios Expertos',
     'Recepción Telefónica',
