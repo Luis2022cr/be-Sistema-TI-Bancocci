@@ -36,7 +36,6 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
 // Obtener UPS por ID
 export const getUpsPorId = async (req: Request, res: Response): Promise<void> => {
     try {
