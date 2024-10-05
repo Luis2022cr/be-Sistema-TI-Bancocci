@@ -2,41 +2,43 @@
 
 <!-- GET: Obtener todas las UPS -->
 <details>
-  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups</summary>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/ups</summary>
   <ul>
-    <li><strong>Descripción:</strong> Obtiene una lista de todas las UPS registradas.</li>
+    <li><strong>Descripción:</strong> Obtiene una lista de todas las UPS, incluyendo información como nombre, modelo, dirección IP, KVA, fecha de instalación, años de uso, próximo cambio, módulos, baterías, observación, agencia, estado y tipo de tamaño.</li>
     <br>
-    <li><strong>Instrucciones:</strong> No se requieren parámetros adicionales. Devuelve un listado completo de UPS.</li>
+    <li><strong>Instrucciones:</strong> No se requiere autenticación para acceder a esta información, pero se pueden pasar filtros opcionales por query params.</li>
     <br>
+    <li><strong>Parámetros opcionales (query params):</strong></li>
+    <pre><code>?tipo_tamano_id={id}</code></pre>
     <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre>
-    GET: /api/v1/ups
-    </pre>
+    <pre><code>
+GET: /api/v1/ups
+GET: /api/v1/ups?tipo_tamano_id=2
+    </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre>
+    <pre><code>
 [
     {
         "id": 1,
-        "nombre": "UPS 1",
-        "modelo": "Modelo A",
+        "nombre": "UPS A",
+        "modelo": "Modelo X",
         "direccion_ip": "192.168.1.1",
         "kva": 10,
-        "fecha_instalacion": "2023-01-01",
-        "años_uso": 1,
-        "proximo_cambio": "2024-01-01",
+        "fecha_instalacion": "2024-01-01",
+        "años_uso": 2,
+        "proximo_cambio": "2025-01-01",
         "modulos": 2,
-        "baterias": 8,
-        "observacion": "Sin observaciones",
-        "agencia": "Agencia A",
-        "estado_ups": "Operativa",
-        "tipo_tamano": "Mediano"
-    },
-    ...
+        "baterias": 4,
+        "observacion": "Funciona correctamente",
+        "agencia": "Agencia Central",
+        "estado_ups": "Activo",
+        "tipo_tamano": "Grande"
+    }
 ]
-    </pre>
+    </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
-      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+      <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
 {
     "error": "Error al obtener las UPS"
@@ -49,45 +51,45 @@
 
 <!-- GET: Obtener UPS por ID -->
 <details>
-  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id</summary>
+  <summary>GET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/ups/:id</summary>
   <ul>
-    <li><strong>Descripción:</strong> Obtiene la información de una UPS específica por su ID.</li>
+    <li><strong>Descripción:</strong> Obtiene la información detallada de una UPS específica basada en su ID.</li>
     <br>
-    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS en la URL.</li>
+    <li><strong>Instrucciones:</strong> No se requiere autenticación para acceder a esta información.</li>
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre>
-    GET: /api/v1/ups/1
-    </pre>
+    <pre><code>
+GET: /api/v1/ups/1
+    </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre>
+    <pre><code>
 {
     "id": 1,
-    "nombre": "UPS 1",
-    "modelo": "Modelo A",
+    "nombre": "UPS A",
+    "modelo": "Modelo X",
     "direccion_ip": "192.168.1.1",
     "kva": 10,
-    "fecha_instalacion": "2023-01-01",
-    "años_uso": 1,
-    "proximo_cambio": "2024-01-01",
+    "fecha_instalacion": "2024-01-01",
+    "años_uso": 2,
+    "proximo_cambio": "2025-01-01",
     "modulos": 2,
-    "baterias": 8,
-    "observacion": "Sin observaciones",
-    "agencia": "Agencia A",
-    "estado_ups": "Operativa",
-    "tipo_tamano": "Mediano"
+    "baterias": 4,
+    "observacion": "Funciona correctamente",
+    "agencia": "Agencia Central",
+    "estado_ups": "Activo",
+    "tipo_tamano": "Grande"
 }
-    </pre>
+    </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
-      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
+      <li><strong><code>404 Not Found:</code></strong> Si la UPS con el ID proporcionado no existe.
         <pre><code>
 {
     "error": "UPS no encontrada"
 }
         </code></pre>
       </li>
-      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+      <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
 {
     "error": "Error al obtener la UPS"
@@ -100,37 +102,37 @@
 
 <!-- POST: Crear una nueva UPS -->
 <details>
-  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups</summary>
+  <summary>POST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/ups</summary>
   <ul>
-    <li><strong>Descripción:</strong> Crea una nueva UPS.</li>
+    <li><strong>Descripción:</strong> Crea una nueva UPS con los datos proporcionados: nombre, modelo, dirección IP, KVA, fecha de instalación, años de uso, próximo cambio, módulos, baterías, agencias, estado y tipo de tamaño.</li>
     <br>
-    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con todos los campos requeridos.</li>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON en el cuerpo de la solicitud con los campos requeridos. Requiere autenticación JWT.</li>
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre>
-    POST: /api/v1/ups
-    Body: {
-        "nombre": "UPS 2",
-        "modelo": "Modelo B",
-        "direccion_ip": "192.168.1.2",
-        "kva": 15,
-        "fecha_instalacion": "2023-02-01",
-        "años_uso": 1,
-        "proximo_cambio": "2024-02-01",
-        "modulos": 3,
-        "baterias": 12,
-        "agencias_id": 1,
-        "estado_ups_id": 1,
-        "tipo_tamano_id": 2,
-        "observacion": "Observaciones adicionales"
-    }
-    </pre>
+    <pre><code>
+POST: /api/v1/ups
+Body: {
+    "nombre": "UPS B",
+    "modelo": "Modelo Y",
+    "direccion_ip": "192.168.1.2",
+    "kva": 15,
+    "fecha_instalacion": "2024-02-01",
+    "años_uso": 1,
+    "proximo_cambio": "2025-02-01",
+    "modulos": 3,
+    "baterias": 6,
+    "agencias_id": 1,
+    "estado_ups_id": 1,
+    "tipo_tamano_id": 1,
+    "observacion": "Nuevo equipo"
+}
+    </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre>
+    <pre><code>
 {
     "message": "UPS creada exitosamente"
 }
-    </pre>
+    </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
@@ -140,14 +142,7 @@
 }
         </code></pre>
       </li>
-      <li><strong><code>400 Bad Request:</code></strong> Si el estado o tipo de tamaño proporcionado no existe.
-        <pre><code>
-{
-    "error": "El estado proporcionado no existe"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+      <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
 {
     "error": "Error al crear la UPS"
@@ -160,37 +155,37 @@
 
 <!-- PUT: Actualizar una UPS existente -->
 <details>
-  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id</summary>
+  <summary>PUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/ups/:id</summary>
   <ul>
-    <li><strong>Descripción:</strong> Actualiza una UPS existente.</li>
+    <li><strong>Descripción:</strong> Actualiza los datos de una UPS existente según su ID.</li>
     <br>
-    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS como parámetro en la URL y enviar el JSON con los campos actualizados.</li>
+    <li><strong>Instrucciones:</strong> Se debe enviar un JSON con los campos actualizados. Requiere autenticación JWT.</li>
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre>
-    PUT: /api/v1/ups/1
-    Body: {
-        "nombre": "UPS 1 Actualizada",
-        "modelo": "Modelo A",
-        "direccion_ip": "192.168.1.1",
-        "kva": 10,
-        "fecha_instalacion": "2023-01-01",
-        "años_uso": 1,
-        "proximo_cambio": "2024-01-01",
-        "modulos": 2,
-        "baterias": 8,
-        "agencias_id": 1,
-        "estado_ups_id": 1,
-        "tipo_tamano_id": 2,
-        "observacion": "Observaciones actualizadas"
-    }
-    </pre>
+    <pre><code>
+PUT: /api/v1/ups/1
+Body: {
+    "nombre": "UPS A",
+    "modelo": "Modelo X actualizado",
+    "direccion_ip": "192.168.1.1",
+    "kva": 10,
+    "fecha_instalacion": "2024-01-01",
+    "años_uso": 3,
+    "proximo_cambio": "2025-01-01",
+    "modulos": 2,
+    "baterias": 4,
+    "agencias_id": 1,
+    "estado_ups_id": 1,
+    "tipo_tamano_id": 1,
+    "observacion": "Actualización de equipo"
+}
+    </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre>
+    <pre><code>
 {
     "message": "UPS actualizada exitosamente"
 }
-    </pre>
+    </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
@@ -200,14 +195,14 @@
 }
         </code></pre>
       </li>
-      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
+      <li><strong><code>404 Not Found:</code></strong> Si la UPS con el ID proporcionado no existe.
         <pre><code>
 {
     "error": "UPS no encontrada"
 }
         </code></pre>
       </li>
-      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
+      <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
 {
     "error": "Error al actualizar la UPS"

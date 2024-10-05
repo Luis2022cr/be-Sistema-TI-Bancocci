@@ -4,19 +4,38 @@ import pool from '../database/mysql';
 // Obtener todas las UPS
 export const getUps = async (req: Request, res: Response): Promise<void> => {
     try {
-        const [ups] = await pool.query(`
+        // Extraemos los posibles filtros desde los query params
+        const { tipo_tamano_id } = req.query;
+        
+        // Base query
+        let query = `
             SELECT u.id, u.nombre, u.modelo, u.direccion_ip, u.kva, u.fecha_instalacion, u.años_uso, u.proximo_cambio, u.modulos, u.baterias, u.observacion,
                    ag.nombre AS agencia, est.nombre AS estado_ups, tt.nombre AS tipo_tamano
             FROM ups u
             JOIN agencias ag ON u.agencias_id = ag.id
             JOIN estado_ups est ON u.estado_ups_id = est.id
             JOIN tipo_tamano tt ON u.tipo_tamano_id = tt.id
-        `);
+        `;
+        
+        // Array para los valores que pasaremos a la consulta
+        const queryParams: any[] = [];
+        
+        // Si el tipo_tamano_id está presente, añadimos una cláusula WHERE
+        if (tipo_tamano_id) {
+            query += ` WHERE u.tipo_tamano_id = ?`;
+            queryParams.push(tipo_tamano_id);  // Agregamos el valor a los parámetros
+        }
+        
+        // Ejecutamos la consulta con los parámetros que tengamos
+        const [ups] = await pool.query(query, queryParams);
+        
+        // Devolvemos los resultados
         res.status(200).json(ups);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las UPS' });
     }
 };
+
 
 // Obtener UPS por ID
 export const getUpsPorId = async (req: Request, res: Response): Promise<void> => {

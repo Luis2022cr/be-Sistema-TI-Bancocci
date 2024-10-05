@@ -4,7 +4,11 @@ import pool from '../database/mysql';
 // Obtener todos los inventarios
 export const getInventarios = async (req: Request, res: Response): Promise<void> => {
     try {
-        const [inventarios] = await pool.query(`
+        // Extraemos los posibles filtros desde los query params
+        const { tipo_inventario_id } = req.query;
+        
+        // Base query
+        let query = `
             SELECT i.id, i.codigo, i.serie, i.modelo, i.comentarios, i.fecha_creacion, i.fecha_modificacion, 
                    ti.nombre AS tipo_inventario, m.nombre AS marca, 
                    ag_origen.nombre AS agencia_origen, ag_actual.nombre AS agencia_actual, 
@@ -16,12 +20,27 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
             JOIN agencias ag_actual ON i.agencias_id_actual = ag_actual.id
             JOIN estado est ON i.estado_id = est.id
             JOIN usuario u ON i.usuario_id = u.id
-        `);
+        `;
+        
+        // Array para los valores que pasaremos a la consulta
+        const queryParams: any[] = [];
+        
+        // Si el tipo_inventario_id está presente, añadimos una cláusula WHERE
+        if (tipo_inventario_id) {
+            query += ` WHERE i.tipo_inventario_id = ?`;
+            queryParams.push(tipo_inventario_id);  // Agregamos el valor a los parámetros
+        }
+        
+        // Ejecutamos la consulta con los parámetros que tengamos
+        const [inventarios] = await pool.query(query, queryParams);
+        
+        // Devolvemos los resultados
         res.status(200).json(inventarios);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los inventarios' });
     }
 };
+
 
 // Obtener inventario por ID
 export const getInventarioPorId = async (req: Request, res: Response): Promise<void> => {

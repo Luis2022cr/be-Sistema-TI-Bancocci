@@ -76,7 +76,7 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(50),
                 ubicacion VARCHAR(150),
-                codigo VARCHAR(50),
+                codigo INT,
                 estado_agencias_id INT,
                 FOREIGN KEY (estado_agencias_id) REFERENCES estado_agencias(id)
             );`,

@@ -41,6 +41,16 @@ router.get('/roles', getRoles);
 router.post('/roles', crearRol);
 router.put('/roles/:id', actualizaRol);
 
+// Rutas de Tipo Inventario
+router.get('/tipo_inventarios', getTipoInventario);
+router.post('/tipo_inventarios', crearTipoInventario);
+router.put('/tipo_inventarios/:id', actualizarTipoInventario);
+
+// Rutas de detalle solicitud
+router.get('/detalle-solicitud', getDetallesSolicitud);
+router.post('/detalle-solicitud', crearDetalleSolicitud);
+router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
+
 // Rutas de Departamentos
 router.get('/departamentos', getDepto);
 router.post('/departamentos', crearDepartamentos);
@@ -75,16 +85,6 @@ router.put('/estado_ups/:id', actualizarEstadoUps);
 router.get('/estado_agencias', getEstadoAgencias);
 router.post('/estado_agencias', crearEstadoAgencias);
 router.put('/estado_agencias/:id', actualizarEstadoAgencias);
-
-// Rutas de Tipo Inventario
-router.get('/tipo_inventarios', getTipoInventario);
-router.post('/tipo_inventarios', crearTipoInventario);
-router.put('/tipo_inventarios/:id', actualizarTipoInventario);
-
-// Rutas de detalle solicitud
-router.get('/detalle-solicitud', getDetallesSolicitud);
-router.post('/detalle-solicitud', crearDetalleSolicitud);
-router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
 // Rutas de Estado UPS
 router.get('/tecnicos', getTecnicos);

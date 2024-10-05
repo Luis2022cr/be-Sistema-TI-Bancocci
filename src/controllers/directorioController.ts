@@ -5,7 +5,7 @@ import pool from '../database/mysql';
 export const getDirectorios = async (req: Request, res: Response): Promise<void> => {
     try {
         const [directorios] = await pool.query(`
-            SELECT d.id, d.extension, d.empleado, dep.nombre AS departamento, ag.nombre AS agencia
+            SELECT d.id, d.extension, d.empleado, dep.id AS departamento_id, dep.nombre AS departamento,ag.id AS agenciaId , ag.nombre AS agencia, ag.codigo AS codigo
             FROM directorios d
             JOIN departamentos dep ON d.departamento_id = dep.id
             JOIN agencias ag ON d.agencias_id = ag.id
