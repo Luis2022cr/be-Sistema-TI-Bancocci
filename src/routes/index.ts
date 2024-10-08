@@ -15,7 +15,7 @@ import { actualizarTecnico, crearTecnico, eliminarTecnico, getTecnicoPorId, getT
 import { actualizarDetalleSolicitud, crearDetalleSolicitud, getDetallesSolicitud } from '../controllers/detalleSolicitudController';
 import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
 import {  crearControlEquipo, getControlEquiposConDetalles, getControlEquiposConDetallesID } from '../controllers/controlEquipoController';
-import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario } from '../controllers/usuarioController';
+import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario, getUsuariosById } from '../controllers/usuarioController';
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
@@ -29,11 +29,13 @@ const router: Router = Router();
 router.post('/auth/registro', registro);
 router.post('/auth/login', login);
 router.put('/auth/cambio-contrasena',authenticateJWT, cambiarContraseña);
+router.put('/auth/cambio-contrasena-admin/:id', cambiarContraseña);
 
 // rutas para Usuarios
 router.get('/perfil/usuario',authenticateJWT, getPerfilUsuario);
 router.put('/perfil/usuario',authenticateJWT, actualizarPerfilUsuario);
 router.get('/usuarios', getUsuarios);
+router.get('/usuarios/:id', getUsuariosById);
 router.put('/usuarios/:id', actualizarDatosUsuario);
 
 // Rutas de Roles

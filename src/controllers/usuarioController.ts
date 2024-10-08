@@ -76,15 +76,44 @@ export const getUsuarios = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
+// Obtener el todos los usuarios por id
+export const getUsuariosById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params; // Desestructurar el id de req.params
+    try {
+        const [resultados]: any = await pool.query(`
+            SELECT 
+                u.id,
+                u.nombre, 
+                u.correo, 
+                u.usuario, 
+                DATE_FORMAT(u.fecha_creacion, '%Y-%m-%d %H:%i:%s') AS fecha_creacion, 
+                DATE_FORMAT(u.fecha_modificacion, '%Y-%m-%d %H:%i:%s') AS fecha_modificacion, 
+                r.descripcion AS rol
+            FROM usuario u
+            JOIN rol r ON u.rol_id = r.id
+            WHERE u.id = ?;
+        `, [id]);
+
+        if (resultados.length > 0) {
+            res.status(200).json(resultados[0]); // Enviar el primer resultado
+        } else {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el perfil del usuario' });
+    }
+};
+
+
 // Editar el perfil de un usuario
 export const actualizarDatosUsuario = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id = req.params;
+        const id = req.params.id;
         const { nombre, correo, rol_id } = req.body;
 
         // Validar que los campos no estén vacíos
-        if (!nombre || !correo || !rol_id) {
-            res.status(400).json({ error: 'Nombre y correo son requeridos' });
+        if ( !rol_id) {
+            res.status(400).json({ error: 'El Rol es requeridos' });
             return;
         }
 
