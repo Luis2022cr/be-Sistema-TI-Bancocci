@@ -2,7 +2,7 @@
 import { Router } from 'express';
 // Seguridad: Solo las personas autenticada pueden usar ese recurso:
 import { authenticateJWT } from '../middlewares/authMiddleware'; //ejemplo de uso= router.get('/ejemplo', authenticateJWT, getEjemplo);
-import { registro, login, cambiarContraseña } from '../controllers/authController';
+import { registro, login, cambiarContraseña, cambiarContraseñaPorAdmin } from '../controllers/authController';
 import { actualizaRol, crearRol, getRoles } from '../controllers/rolController';
 import { actualizarDepartamento, crearDepartamentos, getDepto } from '../controllers/departamentoController';
 import { actualizarTipoTamano, crearTipoTamano, getTipoTamano } from '../controllers/tipoTamanoController';
@@ -19,7 +19,7 @@ import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatos
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
-import { getUps, getUpsPorId, crearUps, actualizarUps, eliminarUps } from '../controllers/upsController';
+import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario } from '../controllers/inventariosController';
 
 
@@ -29,7 +29,7 @@ const router: Router = Router();
 router.post('/auth/registro', registro);
 router.post('/auth/login', login);
 router.put('/auth/cambio-contrasena',authenticateJWT, cambiarContraseña);
-router.put('/auth/cambio-contrasena-admin/:id', cambiarContraseña);
+router.put('/auth/cambio-contrasena-admin/:id', cambiarContraseñaPorAdmin);
 
 // rutas para Usuarios
 router.get('/perfil/usuario',authenticateJWT, getPerfilUsuario);
@@ -122,7 +122,7 @@ router.delete('/directorios/:id', eliminarDirectorio);
 
 // Rutas de UPS
 router.get('/ups', getUps);
-router.get('/ups/:id', getUpsPorId); 
+router.get('/ups/:id', getUpsPorIdConHistorial); 
 router.post('/ups', crearUps);
 router.put('/ups/:id', actualizarUps);
 router.patch('/ups/:id/estado', eliminarUps);

@@ -3,7 +3,7 @@ import { Connection } from 'mysql2/promise';
 // Función para insertar marcas solo si no existen
 export const insertMarcaIfNotExists = async (connection: Connection) => {
   // Marcas que queremos verificar e insertar
-  const marcasToCheck = ['DELL', 'HP', 'EPSON', 'AVAYA', 'OLIVETTI'];
+  const marcasToCheck = ['DELL', 'HP', 'EPSON', 'AVAYA', 'OLIVETTI', 'KYOCERA', 'OTROS'];
 
   // Verificar cuántas de las marcas ya existen
   const checkMarcasSQL = `

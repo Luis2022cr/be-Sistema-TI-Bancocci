@@ -36,10 +36,12 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// Obtener UPS por ID
-export const getUpsPorId = async (req: Request, res: Response): Promise<void> => {
+// Obtener UPS por ID con historial de cambios
+export const getUpsPorIdConHistorial = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
+
+        // 1. Consulta para obtener los datos del UPS
         const [ups]: any = await pool.query(`
             SELECT u.id, u.nombre, u.modelo, u.direccion_ip, u.kva, u.fecha_instalacion, u.años_uso, u.proximo_cambio, u.modulos, u.baterias, u.observacion,
                    ag.nombre AS agencia, est.nombre AS estado_ups, tt.nombre AS tipo_tamano
@@ -50,15 +52,33 @@ export const getUpsPorId = async (req: Request, res: Response): Promise<void> =>
             WHERE u.id = ?
         `, [id]);
 
-        if (ups.length > 0) {
-            res.status(200).json(ups[0]);
-        } else {
+        if (ups.length === 0) {
             res.status(404).json({ error: 'UPS no encontrada' });
+            return;
         }
+
+        // 2. Consulta para obtener el historial de cambios del UPS
+        const [historial]: any = await pool.query(`
+            SELECT hc.cambio, hc.fecha_instalacion, hc.proximo_cambio
+            FROM historial_cambio_ups hc
+            WHERE hc.ups_id = ?
+        `, [id]);
+
+        // 3. Combinar la información del UPS con el historial de cambios
+        const upsConHistorial = {
+            ...ups[0],  // Información del UPS
+            historial: historial  // Historial de cambios del UPS
+        };
+
+        // 4. Enviar la respuesta con los datos del UPS y su historial
+        res.status(200).json(upsConHistorial);
+
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener la UPS' });
+        console.error('Error al obtener la UPS con historial:', error);
+        res.status(500).json({ error: 'Error al obtener la UPS con historial' });
     }
 };
+
 
 // Crear una nueva UPS
 export const crearUps = async (req: Request, res: Response): Promise<void> => {

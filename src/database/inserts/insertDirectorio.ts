@@ -527,12 +527,11 @@ export const insertDirectorios = async (connection: Connection) => {
   { extension: 248022, departamento_id: 23, agencias_id: 38, empleado: 'Mery Zaldivar Sagastume' },
 
   // Agencia 264
-  { extension: 264001, departamento_id: 1, agencias_id: 33, empleado: 'Marvin Roldan Fernandez' },
-  { extension: 264012, departamento_id: 12, agencias_id: 33, empleado: 'Yajaira Castellanos Corea' },
-  { extension: 264015, departamento_id: 15, agencias_id: 33, empleado: 'Yajaira Castellanos Corea' },
+  { extension: 264001, departamento_id: 80, agencias_id: 33, empleado: 'Marvin Roldan Fernandez' },
+  { extension: 264012, departamento_id: 82, agencias_id: 33, empleado: 'Yajaira Castellanos Corea' },
+  { extension: 264015, departamento_id: 109, agencias_id: 33, empleado: 'Yajaira Castellanos Corea' },
   { extension: 264021, departamento_id: 23, agencias_id: 33, empleado: 'Yunior Reyes Vega' },
   { extension: 264022, departamento_id: 23, agencias_id: 33, empleado: 'Darwuin Cardona Ramos' }
-
 
   ];
 

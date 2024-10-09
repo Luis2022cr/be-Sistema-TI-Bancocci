@@ -187,7 +187,7 @@ export const cambiarContraseña = async (req: Request, res: Response): Promise<v
 
 
 export const cambiarContraseñaPorAdmin = async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
+    const {id} = req.params;
     const { nuevaContraseña, confirmarContraseña } = req.body;
 
     // Validar que todos los campos estén presentes
@@ -223,7 +223,7 @@ export const cambiarContraseñaPorAdmin = async (req: Request, res: Response): P
             await pool.query('UPDATE usuario SET contraseña = ? WHERE id = ?', [hashedPassword, id]);
 
             // Responder con éxito
-            res.status(200).json({ mensaje: 'Contraseña actualizada exitosamente' });
+            res.status(200).json({ mensaje: 'Contraseña actualizada exitosamente', NuevaContraña: nuevaContraseña });
         } else {
             res.status(404).json({ error: 'Usuario no encontrado' });
         }

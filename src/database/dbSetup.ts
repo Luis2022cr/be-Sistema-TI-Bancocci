@@ -7,6 +7,7 @@ import { insertEstadoIfNotExists } from "./inserts/insertEstados";
 import { insertEstadoTecnicoIfNotExists } from "./inserts/insertEstadoTecnico";
 import { insertEstadoUpsIfNotExists } from "./inserts/insertEstadoUps";
 import { insertMarcaIfNotExists } from "./inserts/insertMarcas";
+import { insertModelos } from "./inserts/insertModelos";
 import { insertRolesIfNotExists } from "./inserts/insertRoles";
 import { insertTecnicos } from "./inserts/insertTecnicos";
 import { insertTipoInventarioIfNotExists } from "./inserts/insertTipoInventario";
@@ -72,6 +73,13 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 descripcion VARCHAR(250)
             );`,
 
+            `CREATE TABLE IF NOT EXISTS modelo (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nombre VARCHAR(100) NOT NULL,
+                marca_id INT,
+                FOREIGN KEY (marca_id) REFERENCES marca(id)
+            );`,
+
             `CREATE TABLE IF NOT EXISTS agencias (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(50),
@@ -110,7 +118,7 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 FOREIGN KEY (departamento_id) REFERENCES departamentos(id),
                 FOREIGN KEY (agencias_id) REFERENCES agencias(id)
             );`,
- 
+
             `CREATE TABLE IF NOT EXISTS ups (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 agencias_id INT,
@@ -129,6 +137,15 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 FOREIGN KEY (agencias_id) REFERENCES agencias(id),
                 FOREIGN KEY (tipo_tamano_id) REFERENCES tipo_tamano(id),
                 FOREIGN KEY (estado_ups_id) REFERENCES estado_ups(id)
+            );`,
+
+            `CREATE TABLE IF NOT EXISTS ups_mapa (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                ups_id INT,                              
+                lat DECIMAL(10, 8),                     
+                lon DECIMAL(11, 8),                      
+                estado ENUM('online', 'offline') DEFAULT 'offline',  
+                FOREIGN KEY (ups_id) REFERENCES ups(id)
             );`,
 
             `CREATE TABLE IF NOT EXISTS historial_cambio_ups (
@@ -151,7 +168,7 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 serie VARCHAR(150),
                 tipo_inventario_id INT,
                 marca_id INT,
-                modelo VARCHAR(100),
+                modelo_id INT,
                 agencias_id_origen INT,
                 agencias_id_actual INT,
                 estado_id INT,
@@ -161,9 +178,20 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (tipo_inventario_id) REFERENCES tipo_inventario(id),
                 FOREIGN KEY (marca_id) REFERENCES marca(id),
+                FOREIGN KEY (modelo_id) REFERENCES modelo(id),
                 FOREIGN KEY (agencias_id_origen) REFERENCES agencias(id),
                 FOREIGN KEY (agencias_id_actual) REFERENCES agencias(id),
                 FOREIGN KEY (estado_id) REFERENCES estado(id),
+                FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+            );`,
+
+            `CREATE TABLE IF NOT EXISTS historial_cambio_inventario (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                inventario_id INT,
+                cambio_realizado VARCHAR(500) NOT NULL,
+                usuario_id INT,
+                fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (inventario_id) REFERENCES inventario(id),
                 FOREIGN KEY (usuario_id) REFERENCES usuario(id)
             );`,
 
@@ -231,12 +259,14 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertAdminIfNotExists(connection);
         //Insert departamentos
         await insertDepartamentos(connection);
-         //Insert Agencias 
-         await insertAgencias(connection);
-         //Insert directorio 
-         await insertDirectorios(connection);
-         //Insert directorio 
-         await insertTecnicos(connection);
+        //Insert Agencias 
+        await insertAgencias(connection);
+        //Insert directorio 
+        await insertDirectorios(connection);
+        //Insert Tecnicos 
+        await insertTecnicos(connection);
+        //Insert Modelos 
+        await insertModelos(connection);
 
         connection.release();
 
