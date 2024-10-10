@@ -36,6 +36,26 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getUpsSelect = async (req: Request, res: Response): Promise<void> => {
+    try {
+        
+        // Base query
+        let query = `
+            SELECT u.id, u.nombre
+            FROM ups u
+        `;
+        
+        // Ejecutamos la consulta con los parámetros que tengamos
+        const [ups] = await pool.query(query);
+        
+        // Devolvemos los resultados
+        res.status(200).json(ups);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener las UPS' });
+    }
+};
+
+
 // Obtener UPS por ID con historial de cambios
 export const getUpsPorIdConHistorial = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -87,7 +107,7 @@ export const crearUps = async (req: Request, res: Response): Promise<void> => {
         const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
 
         // Validar que todos los campos estén presentes
-        if (!nombre || !modelo || !direccion_ip || !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !modulos || !baterias || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
+        if (!nombre || !modelo || !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -126,7 +146,7 @@ export const actualizarUps = async (req: Request, res: Response): Promise<void> 
         const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
 
         // Validar que todos los campos estén presentes
-        if (!nombre || !modelo || !direccion_ip || !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !modulos || !baterias || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
+        if (!nombre || !modelo|| !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
