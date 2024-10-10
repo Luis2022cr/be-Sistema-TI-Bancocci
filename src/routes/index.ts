@@ -21,6 +21,7 @@ import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
 import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario } from '../controllers/inventariosController';
+import { actualizarModelo, crearModelo, getModelo } from '../controllers/modeloController';
 
 
 const router: Router = Router();
@@ -67,6 +68,11 @@ router.put('/tipo_tamanos/:id', actualizarTipoTamano);
 router.get('/marcas', getMarca);
 router.post('/marcas', crearMarca);
 router.put('/marcas/:id', actualizarMarca);
+
+// Rutas de Marca
+router.get('/modelos', getModelo);
+router.post('/modelos', crearModelo);
+router.put('/modelos/:id', actualizarModelo);
 
 // Rutas de Estado
 router.get('/estados_inventarios', getEstado);
