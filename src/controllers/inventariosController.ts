@@ -73,14 +73,69 @@ export const getInventarioPorId = async (req: Request, res: Response): Promise<v
     }
 };
 
+export const getInventarioPorIdConHistorial = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        const [inventario]: any = await pool.query(`
+       SELECT i.*,
+       ti.nombre AS "tipo_inventario", 
+       m.nombre AS "marca", 
+       mo.nombre AS "modelo", 
+       ag_origen.nombre AS "agencia_origen", 
+       ag_actual.nombre AS "agencia_actual", 
+       e.nombre AS "estado", 
+       u.nombre AS "usuario"
+FROM inventario i
+JOIN tipo_inventario ti ON i.tipo_inventario_id = ti.id
+JOIN marca m ON i.marca_id = m.id
+JOIN modelo mo ON i.modelo_id = mo.id  
+JOIN agencias ag_origen ON i.agencias_id_origen = ag_origen.id
+JOIN agencias ag_actual ON i.agencias_id_actual = ag_actual.id
+JOIN estado e ON i.estado_id = e.id
+JOIN usuario u ON i.usuario_id = u.id
+WHERE i.id = ?;
+        `, [id]);
+
+        if (inventario.length === 0) {
+            res.status(404).json({ error: 'Inventario no encontrada' });
+            return;
+        }
+
+        const [historial]: any = await pool.query(`
+            SELECT 
+               hci.cambio_realizado ,
+               hci.fecha_cambio , 
+               hci.usuario_id ,
+   			   u.usuario as usuario
+               
+            FROM historial_cambio_inventario hci 
+            join usuario u on hci.usuario_id = u.id
+            WHERE hci.inventario_id = ?
+        `, [id]);
+
+        const inventarioConHistorial = {
+            ...inventario[0],  
+            historial: historial  
+        };
+
+        res.status(200).json(inventarioConHistorial);
+
+    } catch (error) {
+        console.error('Error al obtener el Inventario con historial:', error);
+        res.status(500).json({ error: 'Error al obtener el Inventario con historial' });
+    }
+};
+
 // Crear un nuevo inventario
 export const crearInventario = async (req: Request, res: Response): Promise<void> => {
     try {
         const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios } = req.body;
-        const userId = (req as any).user?.id; // ID del usuario autenticado
+        const userId = (req as any).user?.id; 
 
         // Validar que todos los campos estén presentes
-        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || !agencias_id_origen || !agencias_id_actual || !estado_id || !userId) {
+        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || 
+            !agencias_id_origen || !agencias_id_actual || !estado_id || !userId) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -99,7 +154,8 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
 
         // Crear el inventario
         await pool.query(`
-            INSERT INTO inventario (codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, usuario_id, comentarios)
+            INSERT INTO inventario (codigo, serie, tipo_inventario_id, 
+            marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, usuario_id, comentarios)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios]);
 
