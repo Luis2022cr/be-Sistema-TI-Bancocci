@@ -24,6 +24,7 @@ import { getInventarios, getInventarioPorId, crearInventario, actualizarInventar
 import { actualizarModelo, crearModelo, getModelo } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
+import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/notificacionesController';
 
 
 
@@ -154,5 +155,9 @@ router.patch('/inventarios/:id/estado', eliminarInventario);
 router.get('/historial_inventario', obtenerHistorialCambioInventario);  
 router.post('/historial_inventario', authenticateJWT, crearHistorialCambioInventario);    
 router.put('/historial_inventario/:id', actualizarHistorialCambioInventario); 
+
+// Ruta para obtener las notificaciones
+router.get('/notificaciones', getNotificacionesUps);  
+router.get('/notificaciones/check', checkNotificacionesUps);  
 
 export default router;
