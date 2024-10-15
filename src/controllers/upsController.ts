@@ -103,9 +103,8 @@ export const getUpsPorIdConHistorial = async (req: Request, res: Response): Prom
 // Crear una nueva UPS
 export const crearUps = async (req: Request, res: Response): Promise<void> => {
     try {
-        const userId = (req as any).user?.id; // ID del usuario autenticado
         const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
-
+ 
         // Validar que todos los campos estén presentes
         if (!nombre || !modelo || !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
@@ -196,5 +195,24 @@ export const eliminarUps = async (req: Request, res: Response): Promise<void> =>
         }
     } catch (error) {
         res.status(500).json({ error: 'Error al inactivar la UPS' });
+    }
+};
+
+//get para calendario:
+export const getcalendarUPS = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Realizamos la consulta para obtener los datos
+        const [rows] = await pool.query(`
+            SELECT u.id, u.nombre AS ups, u.modelo, u.proximo_cambio,
+                   ag.nombre AS agencia
+            FROM ups u
+            JOIN agencias ag ON u.agencias_id = ag.id
+        `);
+
+        // Si hay datos, los retornamos en la respuesta
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error('Error al obtener los UPS:', error);
+        res.status(500).json({ error: 'Error al obtener los UPS' });
     }
 };

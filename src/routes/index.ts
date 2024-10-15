@@ -19,7 +19,7 @@ import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatos
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
-import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect } from '../controllers/upsController';
+import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario, getInventarioPorIdConHistorial } from '../controllers/inventariosController';
 import { actualizarModelo, crearModelo, getModelo } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
@@ -137,6 +137,9 @@ router.get('/ups/:id', getUpsPorIdConHistorial);
 router.post('/ups', crearUps);
 router.put('/ups/:id', actualizarUps);
 router.patch('/ups/:id/estado', eliminarUps);
+
+//ruta para calendario
+router.get('/calendario/ups', getcalendarUPS);
 
 // Rutas para el CRUD de UPS Mapa
 router.get('/ups-mapa', getUpsMapa);
