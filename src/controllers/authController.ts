@@ -134,8 +134,8 @@ export const cambiarContraseña = async (req: Request, res: Response): Promise<v
     const userId = (req as any).user?.id; // ID del usuario autenticado
 
     // Validar que todos los campos estén presentes
-    if (!contraseñaActual || !nuevaContraseña || !confirmarContraseña) {
-        res.status(400).json({ error: 'Todos los campos son requeridos: contraseña actual, nueva contraseña y confirmar contraseña' });
+    if ( !nuevaContraseña || !confirmarContraseña) {
+        res.status(400).json({ error: 'Todos los campos son requeridos: nueva contraseña y confirmar contraseña' });
         return;
     }
 
@@ -159,14 +159,6 @@ export const cambiarContraseña = async (req: Request, res: Response): Promise<v
 
         if (Array.isArray(userResult) && userResult.length > 0) {
             const user = userResult[0] as { contraseña: string };
-
-            // Verificar si la contraseña actual coincide con la almacenada
-            const isMatch = await bcrypt.compare(contraseñaActual, user.contraseña);
-
-            if (!isMatch) {
-                res.status(401).json({ error: 'La contraseña actual es incorrecta' });
-                return;
-            }
 
             // Encriptar la nueva contraseña
             const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
