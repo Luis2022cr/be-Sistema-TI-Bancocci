@@ -127,6 +127,90 @@ WHERE i.id = ?;
     }
 };
 
+export const getInventariosPorTipoConHistorial = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { tipo_inventario_id } = req.params;
+  
+      // Ejecutamos la consulta SQL filtrada por tipo_inventario_id
+      const [inventarios]: any = await pool.query(`
+        SELECT 
+            i.id AS "inventario_id",
+            i.codigo,
+            i.serie,
+            i.tipo_inventario_id,
+            i.marca_id,
+            i.modelo_id,
+            i.agencias_id_origen,
+            i.agencias_id_actual,
+            i.estado_id,
+            i.usuario_id,
+            i.comentarios,
+            i.fecha_creacion,
+            i.fecha_modificacion,
+            ti.nombre AS "tipo_inventario", 
+            m.nombre AS "marca", 
+            mo.nombre AS "modelo", 
+            ag_origen.nombre AS "agencia_origen", 
+            ag_actual.nombre AS "agencia_actual", 
+            e.nombre AS "estado", 
+            u.nombre AS "usuario",
+            hci.cambio_realizado,
+            hci.fecha_cambio,
+            hci.usuario_id AS "historial_usuario_id",
+            hu.usuario AS "historial_usuario"
+        FROM 
+            inventario i
+        JOIN tipo_inventario ti ON i.tipo_inventario_id = ti.id
+        JOIN marca m ON i.marca_id = m.id
+        JOIN modelo mo ON i.modelo_id = mo.id  
+        JOIN agencias ag_origen ON i.agencias_id_origen = ag_origen.id
+        JOIN agencias ag_actual ON i.agencias_id_actual = ag_actual.id
+        JOIN estado e ON i.estado_id = e.id
+        JOIN usuario u ON i.usuario_id = u.id
+        LEFT JOIN historial_cambio_inventario hci ON hci.inventario_id = i.id
+        LEFT JOIN usuario hu ON hci.usuario_id = hu.id
+        WHERE i.tipo_inventario_id = ?
+        ORDER BY i.id, hci.fecha_cambio;
+      `, [tipo_inventario_id]);
+  
+      if (inventarios.length === 0) {
+        res.status(404).json({ error: 'No se encontraron inventarios para el tipo de inventario especificado' });
+        return;
+      }
+  
+      // Procesar el resultado para agrupar los historiales por inventario
+      const inventariosConHistorial = inventarios.reduce((acc: any[], inventario: any) => {
+        const { inventario_id, ...rest } = inventario;
+  
+        // Verificar si el inventario ya existe en el acumulador
+        let inventarioExistente = acc.find((item) => item.id === inventario_id);
+  
+        if (!inventarioExistente) {
+          inventarioExistente = { id: inventario_id, historial: [] };
+          acc.push(inventarioExistente);
+        }
+  
+        // Agregar el historial
+        inventarioExistente.historial.push({
+          cambio_realizado: inventario.cambio_realizado,
+          fecha_cambio: inventario.fecha_cambio,
+          usuario: inventario.historial_usuario,
+        });
+  
+        // Asignar información general del inventario (sin duplicados)
+        Object.assign(inventarioExistente, rest);
+  
+        return acc;
+      }, []);
+  
+      res.status(200).json(inventariosConHistorial);
+    } catch (error) {
+      console.error('Error al obtener los Inventarios con historial:', error);
+      res.status(500).json({ error: 'Error al obtener los Inventarios con historial' });
+    }
+  };
+
+  
 // Crear un nuevo inventario
 export const crearInventario = async (req: Request, res: Response): Promise<void> => {
     try {
