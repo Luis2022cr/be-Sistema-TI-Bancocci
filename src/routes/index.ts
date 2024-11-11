@@ -19,8 +19,10 @@ import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatos
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
-import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS } from '../controllers/upsController';
+
+import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS, getUpsById } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario, getInventarioPorIdConHistorial, getInventariosPorTipoConHistorial } from '../controllers/inventariosController';
+
 import { actualizarModelo, crearModelo, getModelo } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
@@ -132,8 +134,9 @@ router.delete('/directorios/:id', eliminarDirectorio);
 
 // Rutas de UPS
 router.get('/ups', getUps);
+router.get('/ups/:id', getUpsById); 
 router.get('/ups-select', getUpsSelect);
-router.get('/ups/:id', getUpsPorIdConHistorial); 
+router.get('/ups/:id/historial', getUpsPorIdConHistorial); 
 router.post('/ups', crearUps);
 router.put('/ups/:id', actualizarUps);
 router.patch('/ups/:id/estado', eliminarUps);

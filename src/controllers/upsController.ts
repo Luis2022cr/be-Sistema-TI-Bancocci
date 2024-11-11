@@ -6,7 +6,7 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
     try {
         // Extraemos los posibles filtros desde los query params
         const { tipo_tamano_id } = req.query;
-        
+
         // Base query
         let query = `
             SELECT u.id, u.nombre, u.modelo, u.direccion_ip, u.kva, u.fecha_instalacion, u.años_uso, u.proximo_cambio, u.modulos, u.baterias, u.observacion,
@@ -16,19 +16,19 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
             JOIN estado_ups est ON u.estado_ups_id = est.id
             JOIN tipo_tamano tt ON u.tipo_tamano_id = tt.id
         `;
-        
+
         // Array para los valores que pasaremos a la consulta
         const queryParams: any[] = [];
-        
+
         // Si el tipo_tamano_id está presente, añadimos una cláusula WHERE
         if (tipo_tamano_id) {
             query += ` WHERE u.tipo_tamano_id = ?`;
             queryParams.push(tipo_tamano_id);  // Agregamos el valor a los parámetros
         }
-        
+
         // Ejecutamos la consulta con los parámetros que tengamos
         const [ups] = await pool.query(query, queryParams);
-        
+
         // Devolvemos los resultados
         res.status(200).json(ups);
     } catch (error) {
@@ -36,18 +36,77 @@ export const getUps = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+
+// Obtener UPS por ID
+export const getUpsById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Extraemos el ID de los parámetros de la solicitud
+        const { id } = req.params;
+
+        // Verificamos si el ID está presente
+        if (!id) {
+            res.status(400).json({ error: "El ID de la UPS es requerido" });
+            return;
+        }
+
+        // Ejecutamos la consulta pasando el ID como parámetro
+        const [ups]: any = await pool.query(`
+                  SELECT 
+                        u.id,
+                        u.nombre ,
+                        u.modelo,
+                        u.direccion_ip,
+                        u.kva,
+                        u.fecha_instalacion,
+                        u.años_uso,
+                        u.proximo_cambio,
+                        u.modulos,
+                        u.baterias,
+                        u.observacion,
+                        
+                        a.id AS agencia_id,
+                        a.nombre AS agencia_nombre,
+
+                        t.id AS tipo_tamano_id,
+                        t.nombre AS tipo_tamano_nombre,
+
+                        e.id AS estado_ups_id,
+                        e.nombre AS estado_ups_nombre
+                        
+                    FROM 
+                        ups u
+                        LEFT JOIN agencias a ON u.agencias_id = a.id
+                        LEFT JOIN tipo_tamano t ON u.tipo_tamano_id = t.id
+                        LEFT JOIN estado_ups e ON u.estado_ups_id = e.id
+
+                    WHERE 
+                        u.id = ?;
+        `, [id]);
+        console.log(ups)
+        if (ups.length > 0) {
+            res.status(200).json(ups[0]);
+        } else {
+            res.status(404).json({ error: 'Ups no encontrado' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al obtener la UPS por ID" });
+    }
+};
+
+
 export const getUpsSelect = async (req: Request, res: Response): Promise<void> => {
     try {
-        
+
         // Base query
         let query = `
             SELECT u.id, u.nombre
             FROM ups u
         `;
-        
+
         // Ejecutamos la consulta con los parámetros que tengamos
         const [ups] = await pool.query(query);
-        
+
         // Devolvemos los resultados
         res.status(200).json(ups);
     } catch (error) {
@@ -104,7 +163,7 @@ export const getUpsPorIdConHistorial = async (req: Request, res: Response): Prom
 export const crearUps = async (req: Request, res: Response): Promise<void> => {
     try {
         const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
- 
+
         // Validar que todos los campos estén presentes
         if (!nombre || !modelo || !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
@@ -128,7 +187,7 @@ export const crearUps = async (req: Request, res: Response): Promise<void> => {
         // Si el estado y tipo de tamaño existen, proceder a crear la UPS
         await pool.query(`
             INSERT INTO ups (nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion]
         );
 
@@ -142,10 +201,10 @@ export const crearUps = async (req: Request, res: Response): Promise<void> => {
 export const actualizarUps = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
+        const { nombre, modelo, direccion_ip, kva, años_uso, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
 
         // Validar que todos los campos estén presentes
-        if (!nombre || !modelo|| !kva || !fecha_instalacion || !años_uso || !proximo_cambio || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
+        if (!nombre || !modelo || !kva || !años_uso || !agencias_id || !estado_ups_id || !tipo_tamano_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -166,9 +225,9 @@ export const actualizarUps = async (req: Request, res: Response): Promise<void> 
 
         const [result]: any = await pool.query(`
             UPDATE ups
-            SET nombre = ?, modelo = ?, direccion_ip = ?, kva = ?, fecha_instalacion = ?, años_uso = ?, proximo_cambio = ?, modulos = ?, baterias = ?, agencias_id = ?, estado_ups_id = ?, tipo_tamano_id = ?, observacion = ?
-            WHERE id = ?`, 
-            [nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion, id]
+            SET nombre = ?, modelo = ?, direccion_ip = ?, kva = ?, años_uso = ?, modulos = ?, baterias = ?, agencias_id = ?, estado_ups_id = ?, tipo_tamano_id = ?, observacion = ?
+            WHERE id = ?`,
+            [nombre, modelo, direccion_ip, kva, años_uso, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion, id]
         );
 
         if (result.affectedRows > 0) {

@@ -27,6 +27,8 @@ export const getDirectoriosById = async (req: Request, res: Response): Promise<v
             JOIN agencias ag ON d.agencias_id = ag.id
             WHERE d.id = ?
         `, [id]);
+        
+
         res.status(200).json(directorios[0]);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener los directorios' });
