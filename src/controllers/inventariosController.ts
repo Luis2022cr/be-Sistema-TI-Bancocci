@@ -104,14 +104,17 @@ WHERE i.id = ?;
 
         const [historial]: any = await pool.query(`
             SELECT 
-               hci.cambio_realizado ,
-               hci.fecha_cambio , 
-               hci.usuario_id ,
-   			   u.usuario as usuario
-               
-            FROM historial_cambio_inventario hci 
-            join usuario u on hci.usuario_id = u.id
-            WHERE hci.inventario_id = ?
+                hci.cambio_realizado,
+                hci.fecha_cambio, 
+                hci.usuario_id,
+                u.usuario AS usuario
+            FROM 
+                historial_cambio_inventario hci
+            JOIN 
+                usuario u ON hci.usuario_id = u.id
+            WHERE 
+                hci.inventario_id = ?
+                AND hci.fecha_cambio >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH);
         `, [id]);
 
         const inventarioConHistorial = {
@@ -170,6 +173,7 @@ export const getInventariosPorTipoConHistorial = async (req: Request, res: Respo
         LEFT JOIN historial_cambio_inventario hci ON hci.inventario_id = i.id
         LEFT JOIN usuario hu ON hci.usuario_id = hu.id
         WHERE i.tipo_inventario_id = ?
+        AND hci.fecha_cambio >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
         ORDER BY i.id, hci.fecha_cambio;
       `, [tipo_inventario_id]);
   
