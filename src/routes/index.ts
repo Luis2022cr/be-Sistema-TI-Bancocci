@@ -62,7 +62,7 @@ router.put('/detalle-solicitud/:id', actualizarDetalleSolicitud);
 
 // Rutas de Departamentos
 router.get('/departamentos', getDepto);
-router.post('/departamentos', crearDepartamentos);
+router.post('/crear_departamentos', crearDepartamentos);
 router.put('/departamentos/:id', actualizarDepartamento);
 
 // Rutas de Tipo Tamaño
@@ -72,12 +72,12 @@ router.put('/tipo_tamanos/:id', actualizarTipoTamano);
 
 // Rutas de Marca
 router.get('/marcas', getMarca);
-router.post('/marcas', crearMarca);
+router.post('/crear_marcas', crearMarca);
 router.put('/marcas/:id', actualizarMarca);
 
 // Rutas de Marca
 router.get('/modelos', getModelo);
-router.post('/modelos', crearModelo);
+router.post('/crear_modelos', crearModelo);
 router.put('/modelos/:id', actualizarModelo);
 
 // Rutas de Estado
@@ -115,7 +115,7 @@ router.put('/historial_cambio_ups/:id', actualizarHistorialCambioUPS);
 
 // Rutas de Estado Agencias
 router.get('/agencias', getAgencias);
-router.post('/agencias', crearAgencias);
+router.post('/crear_agencias', crearAgencias);
 router.put('/agencias/:id', actualizarAgencias);
 router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
 

@@ -16,19 +16,19 @@ export const getAgencias= async (req: Request, res: Response): Promise<void> => 
 // Crear una nueva agencias 
 export const crearAgencias = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { nombre, ubicacion, codigo, estado_agencias_id } = req.body;
+        const { nombre, ubicacion, codigo } = req.body;
 
         // Validacion para que el nombre no esté vacío
-        if (!nombre || !ubicacion || !codigo || !estado_agencias_id ) {
+        if (!nombre || !ubicacion || !codigo ) {
             res.status(400).json({ error: 'todos los datos son requeridos' });
             return;
         }
 
         await pool.query(`
             INSERT INTO agencias 
-            (nombre, ubicacion, codigo, estado_agencias_id) 
-            VALUES (?, ? , ?, ?)`
-            , [nombre, ubicacion, codigo, estado_agencias_id]);
+            (nombre, ubicacion, codigo,estado_agencias_id) 
+            VALUES (?, ? , ?, 1)`
+            , [nombre, ubicacion, codigo]);
 
         res.status(201).json({ message: 'Agencia creado exitosamente'});
     } catch (error) {
