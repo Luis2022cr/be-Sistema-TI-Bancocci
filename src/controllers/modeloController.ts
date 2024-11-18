@@ -17,6 +17,25 @@ export const getModelo = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getModeloById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const [modelo]: any = await pool.query(`
+              SELECT m.id, m.nombre, m.marca_id, ma.nombre AS modelo
+            FROM modelo m
+            JOIN marca ma ON m.marca_id = ma.id
+            WHERE m.id = ?
+        `, [id]);
+
+        if (modelo.length > 0) {
+            res.status(200).json(modelo[0]);
+        } else {
+            res.status(404).json({ error: 'Modelo no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el Modelo' });
+    }
+};
 
 // Crear una nueva marca
 export const crearModelo = async (req: Request, res: Response): Promise<void> => {
@@ -49,7 +68,7 @@ export const actualizarModelo = async (req: Request, res: Response): Promise<voi
             return;
         }
 
-        const [result]: any = await pool.query('UPDATE modelo SET nombre = ? marca_id = ? WHERE id = ?', [nombre, , marca_id ,id]);
+        const [result]: any = await pool.query('UPDATE modelo SET nombre = ? , marca_id = ? WHERE id = ?', [nombre, marca_id ,id]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({ message: 'Modelo actualizado exitosamente' });
@@ -57,7 +76,7 @@ export const actualizarModelo = async (req: Request, res: Response): Promise<voi
             res.status(404).json({ error: 'Modelo no encontrado' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Error al actualizar 1el modelo' });
+        res.status(500).json({ error: 'Error al actualizar el modelo' });
     }
 };
 

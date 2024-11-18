@@ -4,22 +4,22 @@ import { Router } from 'express';
 import { authenticateJWT } from '../middlewares/authMiddleware'; //ejemplo de uso= router.get('/ejemplo', authenticateJWT, getEjemplo);
 import { registro, login, cambiarContraseña, cambiarContraseñaPorAdmin } from '../controllers/authController';
 import { actualizaRol, crearRol, getRoles } from '../controllers/rolController';
-import { actualizarDepartamento, crearDepartamentos, getDepto } from '../controllers/departamentoController';
+import { actualizarDepartamento, crearDepartamentos, getDepto, getDeptoPorId } from '../controllers/departamentoController';
 import { actualizarTipoTamano, crearTipoTamano, getTipoTamano } from '../controllers/tipoTamanoController';
-import { actualizarMarca, crearMarca, getMarca } from '../controllers/marcaController';
+import { actualizarMarca, crearMarca, getMarca, getMarcaById } from '../controllers/marcaController';
 import { actualizarEstado, crearEstado, getEstado, getLog } from '../controllers/estadoController';
 import { actualizarEstadoUps, crearEstadoUps, getEstadoUps } from '../controllers/estadoUpsController';
 import { actualizarTipoInventario, crearTipoInventario, getTipoInventario } from '../controllers/tipoInventarioController';
 import { actualizarHistorialCambioUPS, crearHistorialCambioUPS, obtenerHistorialCambioUPS } from '../controllers/historialCambioUpsController';
 import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatosUsuario, getUsuariosById } from '../controllers/usuarioController';
 import { actualizarEstadoAgencias, crearEstadoAgencias, getEstadoAgencias } from '../controllers/estadoAgenciasController';
-import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias } from '../controllers/agenciasController';
+import { actualizarAgencias, actualizarEstadoAgencia, crearAgencias, getAgencias, getAgenciasById } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
 
 import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS, getUpsById } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario, getInventarioPorIdConHistorial, getInventariosPorTipoConHistorial } from '../controllers/inventariosController';
 
-import { actualizarModelo, crearModelo, getModelo } from '../controllers/modeloController';
+import { actualizarModelo, crearModelo, getModelo, getModeloById } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
 import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/notificacionesController';
@@ -55,8 +55,9 @@ router.put('/tipo_inventarios/:id', actualizarTipoInventario);
 
 // Rutas de Departamentos
 router.get('/departamentos', getDepto);
+router.get('/departamento/:id', getDeptoPorId);
 router.post('/crear_departamentos', crearDepartamentos);
-router.put('/departamentos/:id', actualizarDepartamento);
+router.put('/actualizar-departamento/:id', actualizarDepartamento);
 
 // Rutas de Tipo Tamaño
 router.get('/tipo_tamanos', getTipoTamano);
@@ -65,13 +66,15 @@ router.put('/tipo_tamanos/:id', actualizarTipoTamano);
 
 // Rutas de Marca
 router.get('/marcas', getMarca);
+router.get('/marca/:id', getMarcaById);
 router.post('/crear_marcas', crearMarca);
-router.put('/marcas/:id', actualizarMarca);
+router.put('/actualizar-marca/:id', actualizarMarca);
 
 // Rutas de Marca
 router.get('/modelos', getModelo);
+router.get('/modelo/:id', getModeloById);
 router.post('/crear_modelos', crearModelo);
-router.put('/modelos/:id', actualizarModelo);
+router.put('/actualizar-modelo/:id', actualizarModelo);
 
 // Rutas de Estado
 router.get('/estados_inventarios', getEstado);
@@ -96,8 +99,9 @@ router.put('/historial_cambio_ups/:id', actualizarHistorialCambioUPS);
 
 // Rutas de Estado Agencias
 router.get('/agencias', getAgencias);
+router.get('/agencia/:id', getAgenciasById);
 router.post('/crear_agencias', crearAgencias);
-router.put('/agencias/:id', actualizarAgencias);
+router.put('/actualizar-agencia/:id', actualizarAgencias);
 router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
 
 
