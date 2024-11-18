@@ -5,7 +5,7 @@ import pool from '../database/mysql';
 // Obtener todas las marcas
 export const getMarca = async (req: Request, res: Response): Promise<void> => {
     try {
-        const [marcas] = await pool.query('SELECT * FROM marca');
+        const [marcas]: any = await pool.query('SELECT * FROM marca');
         res.status(200).json(marcas);
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las marcas' });

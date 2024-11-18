@@ -247,6 +247,16 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios]);
 
+        // Crear el log del inventario creado
+        const descripcion = `Se creó un nuevo inventario con código: ${codigo}, serie: ${serie}.`;
+        const cambioRealizado = `Código: ${codigo}, Serie: ${serie}, Tipo Inventario ID: ${tipo_inventario_id}, Marca ID: ${marca_id}, Modelo ID: ${modelo_id}, Agencia Origen ID: ${agencias_id_origen}, Agencia Actual ID: ${agencias_id_actual}, Estado ID: ${estado_id}
+        `;
+
+        await pool.query(`
+            INSERT INTO logs (descripcion, cambio_realizado, usuario_id)
+            VALUES (?, ?, ?)
+        `, [descripcion, cambioRealizado, userId]);
+        
         res.status(201).json({ message: 'Inventario creado exitosamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el inventario' });
@@ -254,18 +264,32 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
 };
 
 // Actualizar un inventario existente
+// Actualizar un inventario existente
 export const actualizarInventario = async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = (req as any).user?.id; // ID del usuario autenticado
-
         const { id } = req.params;
         const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios } = req.body;
 
         // Validar que todos los campos estén presentes
-        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || !agencias_id_origen || !agencias_id_actual || !estado_id ) {
+        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || !agencias_id_origen || !agencias_id_actual || !estado_id) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
+
+        // Obtener el inventario actual antes de actualizar
+        const [inventarioActual]: any = await pool.query(`
+            SELECT codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios
+            FROM inventario
+            WHERE id = ?
+        `, [id]);
+
+        if (inventarioActual.length === 0) {
+            res.status(404).json({ error: 'Inventario no encontrado' });
+            return;
+        }
+
+        const inventarioAnterior = inventarioActual[0];
 
         // Actualizar el inventario
         const [result]: any = await pool.query(`
@@ -275,6 +299,38 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
         `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios, id]);
 
         if (result.affectedRows > 0) {
+            // Comparar los campos modificados y generar el log de cambios
+            let cambios: string[] = [];
+
+            // Función para agregar cambios al array
+            const registrarCambio = (campo: string, valorAnterior: any, valorNuevo: any) => {
+                if (valorAnterior !== valorNuevo) {
+                    cambios.push(`${campo}: '${valorAnterior}' -> '${valorNuevo}'`);
+                }
+            };
+
+            registrarCambio('Código', inventarioAnterior.codigo, codigo);
+            registrarCambio('Serie', inventarioAnterior.serie, serie);
+            registrarCambio('Tipo Inventario ID', inventarioAnterior.tipo_inventario_id, tipo_inventario_id);
+            registrarCambio('Marca ID', inventarioAnterior.marca_id, marca_id);
+            registrarCambio('Modelo ID', inventarioAnterior.modelo_id, modelo_id);
+            registrarCambio('Agencia Origen ID', inventarioAnterior.agencias_id_origen, agencias_id_origen);
+            registrarCambio('Agencia Actual ID', inventarioAnterior.agencias_id_actual, agencias_id_actual);
+            registrarCambio('Estado ID', inventarioAnterior.estado_id, estado_id);
+            registrarCambio('Comentarios', inventarioAnterior.comentarios, comentarios);
+
+            // Generar la descripción y el cambio realizado para el log
+            const descripcion = `Se actualizó el inventario con ID: ${id}.`;
+            const cambioRealizado = cambios.length > 0 ? cambios.join(', ') : 'Sin cambios detectados';
+
+            // Registrar el log si hubo cambios
+            if (cambios.length > 0) {
+                await pool.query(`
+                    INSERT INTO logs (descripcion, cambio_realizado, usuario_id)
+                    VALUES (?, ?, ?)
+                `, [descripcion, cambioRealizado, userId]);
+            }
+
             res.status(200).json({ message: 'Inventario actualizado exitosamente' });
         } else {
             res.status(404).json({ error: 'Inventario no encontrado' });
@@ -283,6 +339,7 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
         res.status(500).json({ error: 'Error al actualizar el inventario' });
     }
 };
+
 
 // Eliminar (cambiar estado) un inventario
 

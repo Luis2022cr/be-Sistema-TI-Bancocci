@@ -7,7 +7,7 @@ export const insertAdminIfNotExists = async (connection: Connection) => {
     nombre: 'Admin 01',
     correo: 'admin@admin.com',
     usuario: 'admin01',
-    contraseña: '$2a$12$jc4BopE6GnHmBm1ToEHhgOXpJWBr/gSM27WrLtoBKhaeGubeWog32', // 'Admin@2024Banccoci'
+    contraseña: '$2a$12$/cOt/ScYrmkCHuqu61GHTOGj/z4K81lvhGmh9g072w4XFy2DsAEAq', // 'Aa123456789'
     rol_id: 1
   };
 

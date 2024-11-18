@@ -55,3 +55,22 @@ export const actualizarEstado = async (req: Request, res: Response): Promise<voi
     }
 };
 
+export const getLog = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const [logs] = await pool.query(`
+            SELECT 
+                logs.id, 
+                logs.descripcion, 
+                logs.cambio_realizado, 
+                logs.fecha_cambio, 
+                logs.usuario_id,
+                usuario.nombre AS usuario_nombre
+            FROM logs
+            JOIN usuario ON logs.usuario_id = usuario.id
+        `);
+
+        res.status(200).json(logs);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los registros de logs' });
+    }
+};

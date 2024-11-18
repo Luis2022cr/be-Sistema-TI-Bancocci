@@ -6,6 +6,7 @@ import pool from '../database/mysql';
 export const getModelo = async (req: Request, res: Response): Promise<void> => {
     try {
         const [marcas] = await pool.query(`SELECT 
+            m.id,
  			m.nombre, 
  			ma.nombre as marca
             FROM modelo m

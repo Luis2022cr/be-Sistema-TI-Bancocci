@@ -1,17 +1,15 @@
 import { insertAgencias } from "./inserts/insertAgencias";
 import { insertDepartamentos } from "./inserts/insertDepartamentos";
-import { insertDetalleSolicitudIfNotExists } from "./inserts/insertDetallesolicitud";
 import { insertDirectorios } from "./inserts/insertDirectorio";
 import { insertEstadoAgenciasIfNotExists } from "./inserts/insertEstadoAgencias";
 import { insertEstadoIfNotExists } from "./inserts/insertEstados";
-import { insertEstadoTecnicoIfNotExists } from "./inserts/insertEstadoTecnico";
 import { insertEstadoUpsIfNotExists } from "./inserts/insertEstadoUps";
 import { insertMarcaIfNotExists } from "./inserts/insertMarcas";
 import { insertModelos } from "./inserts/insertModelos";
 import { insertRolesIfNotExists } from "./inserts/insertRoles";
-import { insertTecnicos } from "./inserts/insertTecnicos";
 import { insertTipoInventarioIfNotExists } from "./inserts/insertTipoInventario";
 import { insertTipoTamanoIfNotExists } from "./inserts/insertTipoTamano";
+import { insertUpsIfNotExists } from "./inserts/insertUps";
 import { insertAdminIfNotExists } from "./inserts/insertUsuario";
 import pool from "./mysql";
 
@@ -58,11 +56,6 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 nombre VARCHAR(50)
             );`,
 
-            `CREATE TABLE IF NOT EXISTS estado_tecnico (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nombre VARCHAR(50)
-            );`,
-
             `CREATE TABLE IF NOT EXISTS tipo_inventario (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 nombre VARCHAR(50)
@@ -99,14 +92,6 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 rol_id INT,
                 FOREIGN KEY (rol_id) REFERENCES rol(id)
-            );`,
-
-            `CREATE TABLE IF NOT EXISTS tecnico (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nombre VARCHAR(50),
-                numero_identidad INT,
-                estado_id INT,
-                FOREIGN KEY (estado_id) REFERENCES estado_tecnico(id)
             );`,
 
             `CREATE TABLE IF NOT EXISTS directorios (
@@ -157,11 +142,6 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 FOREIGN KEY (ups_id) REFERENCES ups(id)
             );`,
 
-            `CREATE TABLE IF NOT EXISTS detalle_solicitud (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                nombre VARCHAR(50)
-            );`,
-
             `CREATE TABLE IF NOT EXISTS inventario (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 codigo VARCHAR(50),
@@ -195,42 +175,17 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 FOREIGN KEY (usuario_id) REFERENCES usuario(id)
             );`,
 
-            `CREATE TABLE IF NOT EXISTS detalle_equipo (
+            `CREATE TABLE IF NOT EXISTS logs (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                descripcion_equipo VARCHAR(100),
-                inventario_id INT,
-                agencias_id INT,
-                FOREIGN KEY (inventario_id) REFERENCES inventario(id),
-                FOREIGN KEY (agencias_id) REFERENCES agencias(id)
-            );`,
-
-            `CREATE TABLE IF NOT EXISTS control_equipo (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                fecha DATE,
-                tecnico_id INT,
-                agencias_id INT,
-                n_ticket_mesa_ayuda INT,
-                zona_region VARCHAR(250),
-                detalle_solicitud_id INT,
+                descripcion VARCHAR(500) NOT NULL,
+                cambio_realizado VARCHAR(500) NOT NULL,
                 usuario_id INT,
-                observacion VARCHAR(500),
-                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (tecnico_id) REFERENCES tecnico(id),
-                FOREIGN KEY (agencias_id) REFERENCES agencias(id),
-                FOREIGN KEY (detalle_solicitud_id) REFERENCES detalle_solicitud(id),
+                fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (usuario_id) REFERENCES usuario(id)
             );`,
 
-            `CREATE TABLE IF NOT EXISTS control_equipo_detalle (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                control_equipo_id INT,
-                detalle_equipo_id INT,
-                FOREIGN KEY (control_equipo_id) REFERENCES control_equipo(id),
-                FOREIGN KEY (detalle_equipo_id) REFERENCES detalle_equipo(id)
-            );`
         ];
-
+ 
         for (const query of queries) {
             await connection.query(query);
         }
@@ -245,12 +200,8 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertEstadoIfNotExists(connection);
         //Insert estado_agencias
         await insertEstadoAgenciasIfNotExists(connection);
-        //Insert estado_tecnico
-        await insertEstadoTecnicoIfNotExists(connection);
         //Insert estado_ups
         await insertEstadoUpsIfNotExists(connection);
-        //Insert detalle_solicitud
-        await insertDetalleSolicitudIfNotExists(connection);
         //Insert tipo_inventario
         await insertTipoInventarioIfNotExists(connection);
         //Insert marcas
@@ -263,10 +214,10 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertAgencias(connection);
         //Insert directorio 
         await insertDirectorios(connection);
-        //Insert Tecnicos 
-        await insertTecnicos(connection);
         //Insert Modelos 
         await insertModelos(connection);
+         //Insert UPS 
+         await insertUpsIfNotExists(connection);
 
         connection.release();
 

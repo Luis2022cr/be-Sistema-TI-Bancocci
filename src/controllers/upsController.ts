@@ -82,7 +82,7 @@ export const getUpsById = async (req: Request, res: Response): Promise<void> => 
                     WHERE 
                         u.id = ?;
         `, [id]);
-        console.log(ups)
+      
         if (ups.length > 0) {
             res.status(200).json(ups[0]);
         } else {
