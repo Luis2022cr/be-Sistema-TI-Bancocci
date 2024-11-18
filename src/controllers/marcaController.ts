@@ -13,6 +13,25 @@ export const getMarca = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+export const getMarcaById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const [marca]: any = await pool.query(`
+              SELECT * From marca
+            WHERE id = ?
+        `, [id]);
+
+        if (marca.length > 0) {
+            res.status(200).json(marca[0]);
+        } else {
+            res.status(404).json({ error: 'Marca no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el Marca' });
+    }
+};
+
+
 // Crear una nueva marca
 export const crearMarca = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -31,6 +50,7 @@ export const crearMarca = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ error: 'Error al crear la marca' });
     }
 };
+
 
 // Actualizar un Marca existente
 export const actualizarMarca = async (req: Request, res: Response): Promise<void> => {

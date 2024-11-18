@@ -12,6 +12,24 @@ export const getDepto = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getDeptoPorId = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const [departamentos]: any = await pool.query(`
+              SELECT *
+            FROM departamentos
+            WHERE id = ?
+        `, [id]);
+
+        if (departamentos.length > 0) {
+            res.status(200).json(departamentos[0]);
+        } else {
+            res.status(404).json({ error: 'Departamento no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el Departamento' });
+    }
+};
 
 // Crear un nuevo Departamento
 export const crearDepartamentos = async (req: Request, res: Response): Promise<void> => {
