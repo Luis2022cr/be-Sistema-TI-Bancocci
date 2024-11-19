@@ -34,23 +34,25 @@ export const getDirectoriosById = async (req: Request, res: Response): Promise<v
         res.status(500).json({ error: 'Error al obtener los directorios' });
     }
 };
+
+
 // Crear un nuevo directorio con validación de extensión única
 export const crearDirectorio = async (req: Request, res: Response): Promise<void> => {
     try {
+        const userId = (req as any).user?.id; // ID del usuario autenticado
+        
         const { extension, departamento_id, agencias_id, empleado } = req.body;
 
-        // Validar que todos los campos estén presentes
         if (!extension || !departamento_id || !agencias_id || !empleado) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
 
-         // Validar que la extensión sea un número y tenga una longitud máxima de 6 dígitos
-         if (typeof extension !== 'number' || extension.toString().length > 6) {
+        if (typeof extension !== 'number' || extension.toString().length > 6) {
             res.status(400).json({ error: 'La extensión debe ser un número de hasta 6 dígitos' });
             return;
         }
-        // Verificar si la extensión ya existe
+
         const [existeExtension]: any = await pool.query('SELECT * FROM directorios WHERE extension = ?', [extension]);
         if (existeExtension.length > 0) {
             res.status(400).json({ error: 'La extensión ya existe. Debe ser única.' });
@@ -63,45 +65,89 @@ export const crearDirectorio = async (req: Request, res: Response): Promise<void
             [extension, departamento_id, agencias_id, empleado]
         );
 
+        // Log de creación
+        const descripcion = `Se creó un nuevo directorio con extensión: ${extension}`;
+        const cambioRealizado = `Extensión: ${extension}, Departamento ID: ${departamento_id}, Agencia ID: ${agencias_id}, Empleado: ${empleado}`;
+        await pool.query(`INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`, [descripcion, cambioRealizado, userId]);
+
         res.status(201).json({ message: 'Directorio creado exitosamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el directorio' });
     }
 };
 
+
 // Actualizar un directorio existente con validación de extensión única
 export const actualizarDirectorio = async (req: Request, res: Response): Promise<void> => {
     try {
+        const userId = (req as any).user?.id; // ID del usuario autenticado
         const { id } = req.params;
         const { extension, departamento_id, agencias_id, empleado } = req.body;
 
-        // Validar que todos los campos estén presentes
+        // Validación de campos obligatorios
         if (!extension || !departamento_id || !agencias_id || !empleado) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
-        // Validar que la extensión sea un número y tenga una longitud máxima de 6 dígitos
-        if ( extension.toString().length > 6) {
+
+        // Validar longitud de la extensión
+        if (extension.toString().length > 6) {
             res.status(400).json({ error: 'La extensión debe ser un número de hasta 6 dígitos' });
             return;
         }
-        // Verificar si la extensión ya existe en otro directorio
-        const [existeExtension]: any = await pool.query(`
-            SELECT * FROM directorios WHERE extension = ? AND id != ?`, [extension, id]
+
+        // Verificar si la extensión ya existe en otro registro
+        const [existeExtension]: any = await pool.query(
+            `SELECT * FROM directorios WHERE extension = ? AND id != ?`, 
+            [extension, id]
         );
         if (existeExtension.length > 0) {
             res.status(400).json({ error: 'La extensión ya existe. Debe ser única.' });
             return;
         }
 
-        const [result]: any = await pool.query(`
-            UPDATE directorios 
-            SET extension = ?, departamento_id = ?, agencias_id = ?, empleado = ?
-            WHERE id = ?`, 
+        // Obtener datos del directorio actual antes de actualizar
+        const [directorios]: any = await pool.query(`SELECT * FROM directorios WHERE id = ?`, [id]);
+        if (directorios.length === 0) {
+            res.status(404).json({ error: 'Directorio no encontrado' });
+            return;
+        }
+
+        const directorioAnterior = directorios[0];
+        let cambios: string[] = [];
+
+        // Comparar y registrar cambios solo si se detectan diferencias
+        const registrarCambio = (campo: string, valorAnterior: any, valorNuevo: any) => {
+            if (valorAnterior !== valorNuevo) {
+                cambios.push(`${campo}: '${valorAnterior}' -> '${valorNuevo}'`);
+            }
+        };
+
+        registrarCambio('Extensión', directorioAnterior.extension, extension);
+        registrarCambio('Departamento ID', directorioAnterior.departamento_id, departamento_id);
+        registrarCambio('Agencia ID', directorioAnterior.agencias_id, agencias_id);
+        registrarCambio('Empleado', directorioAnterior.empleado, empleado);
+
+        // Actualizar el directorio
+        const [result]: any = await pool.query(
+            `UPDATE directorios 
+             SET extension = ?, departamento_id = ?, agencias_id = ?, empleado = ?
+             WHERE id = ?`,
             [extension, departamento_id, agencias_id, empleado, id]
         );
 
         if (result.affectedRows > 0) {
+            // Registrar log solo si hubo cambios
+            if (cambios.length > 0) {
+                const descripcion = `Se actualizó el directorio con ID: ${id}`;
+                const cambioRealizado = cambios.join(', '); // Unir los cambios en una sola cadena
+                await pool.query(
+                    `INSERT INTO logs (descripcion, cambio_realizado, usuario_id) 
+                     VALUES (?, ?, ?)`,
+                    [descripcion, cambioRealizado, userId]
+                );
+            }
+
             res.status(200).json({ message: 'Directorio actualizado exitosamente' });
         } else {
             res.status(404).json({ error: 'Directorio no encontrado' });
@@ -111,17 +157,30 @@ export const actualizarDirectorio = async (req: Request, res: Response): Promise
     }
 };
 
+
+
 // Eliminar un directorio
 export const eliminarDirectorio = async (req: Request, res: Response): Promise<void> => {
     try {
+        const userId = (req as any).user?.id; // ID del usuario autenticado
         const { id } = req.params;
 
-        const [result]: any = await pool.query(`
-            DELETE FROM directorios WHERE id = ?
-            `, [id]
-        );
+        const [directorios]: any = await pool.query(`SELECT * FROM directorios WHERE id = ?`, [id]);
+        if (directorios.length === 0) {
+            res.status(404).json({ error: 'Directorio no encontrado' });
+            return;
+        }
+
+        const directorio = directorios[0];
+
+        const [result]: any = await pool.query(`DELETE FROM directorios WHERE id = ?`, [id]);
 
         if (result.affectedRows > 0) {
+            // Log de eliminación
+            const descripcion = `Se eliminó el directorio con ID: ${id}`;
+            const cambioRealizado = `Extensión: ${directorio.extension}, Departamento ID: ${directorio.departamento_id}, Agencia ID: ${directorio.agencias_id}, Empleado: ${directorio.empleado}`;
+            await pool.query(`INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`, [descripcion, cambioRealizado, userId]);
+
             res.status(200).json({ message: 'Directorio eliminado exitosamente' });
         } else {
             res.status(404).json({ error: 'Directorio no encontrado' });
@@ -130,3 +189,4 @@ export const eliminarDirectorio = async (req: Request, res: Response): Promise<v
         res.status(500).json({ error: 'Error al eliminar el directorio' });
     }
 };
+ 

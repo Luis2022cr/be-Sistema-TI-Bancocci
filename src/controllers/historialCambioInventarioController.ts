@@ -26,26 +26,47 @@ export const obtenerHistorialCambioInventario = async (req: Request, res: Respon
     }
 };
 
-
 export const crearHistorialCambioInventario = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user?.id; // ID del usuario autenticado
+
     try {
         const { inventario_id, cambio_realizado, fecha_cambio } = req.body;
-        const userId = (req as any).user?.id;
 
-        if (!inventario_id || !cambio_realizado  || !fecha_cambio ) {
+        // Validar que todos los campos estén presentes
+        if (!inventario_id || !cambio_realizado || !fecha_cambio) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
 
         // Verificar que el inventario_id exista en la tabla inventario
-        const [inventario]: any = await pool.query('SELECT id FROM inventario WHERE id = ?', [inventario_id]);
+        const [inventario]: any = await pool.query(`
+            SELECT ti.nombre AS nombre_inventario
+            FROM inventario i
+            JOIN tipo_inventario ti ON i.tipo_inventario_id = ti.id
+            WHERE i.id = ?`, 
+            [inventario_id]
+        );
+
         if (inventario.length === 0) {
             res.status(404).json({ error: 'Inventario no válido' });
             return;
         }
 
-        await pool.query('INSERT INTO historial_cambio_inventario (inventario_id, cambio_realizado, usuario_id, fecha_cambio) VALUES (?, ?, ?, ?)', 
-            [inventario_id, cambio_realizado, userId, fecha_cambio]);
+        const nombreInventario = inventario[0].nombre_inventario;
+
+        // Insertar el historial de cambio en la tabla historial_cambio_inventario
+        await pool.query(
+            'INSERT INTO historial_cambio_inventario (inventario_id, cambio_realizado, usuario_id, fecha_cambio) VALUES (?, ?, ?, ?)',
+            [inventario_id, cambio_realizado, userId, fecha_cambio]
+        );
+
+        // Registrar el cambio en la tabla de logs
+        const descripcion = `Historial de cambio creado para el inventario: ${nombreInventario}`;
+        const detalleCambio = `Inventario ID: ${inventario_id}, Cambio realizado: ${cambio_realizado}, Fecha de cambio: ${fecha_cambio}`;
+        await pool.query(
+            `INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`,
+            [descripcion, detalleCambio, userId]
+        );
 
         res.status(201).json({ message: 'Historial de cambio de Inventario creado exitosamente' });
     } catch (error) {

@@ -343,20 +343,48 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
 
 // Eliminar (cambiar estado) un inventario
 
-    export const eliminarInventario = async (req: Request, res: Response): Promise<void> => {
+export const eliminarInventario = async (req: Request, res: Response): Promise<void> => {
     try {
+        const userId = (req as any).user?.id; // ID del usuario autenticado
         const { id } = req.params;
+        const estadoInactivoId = 4; // ID del estado inactivo/eliminado
 
-        const [result]: any = await pool.query('UPDATE inventario SET estado_id = 4 WHERE id = ?', [id]);
+        // Obtener el inventario actual antes de cambiar el estado
+        const [inventarioActual]: any = await pool.query(`
+            SELECT codigo, serie, estado_id
+            FROM inventario
+            WHERE id = ?
+        `, [id]);
+
+        if (inventarioActual.length === 0) {
+            res.status(404).json({ error: 'Inventario no encontrado' });
+            return;
+        }
+
+        const inventarioAnterior = inventarioActual[0];
+        const estadoAnterior = inventarioAnterior.estado_id;
+
+        // Actualizar el estado del inventario a inactivo
+        const [result]: any = await pool.query(
+            'UPDATE inventario SET estado_id = ? WHERE id = ?', 
+            [estadoInactivoId, id]
+        );
 
         if (result.affectedRows > 0) {
+            // Crear log del cambio de estado
+            const descripcion = `Se cambió el estado del inventario con ID: ${id} a inactivo.`;
+            const cambioRealizado = `Código: ${inventarioAnterior.codigo}, Serie: ${inventarioAnterior.serie}, Estado anterior ID: ${estadoAnterior} -> Estado nuevo ID: ${estadoInactivoId}`;
+
+            await pool.query(`
+                INSERT INTO logs (descripcion, cambio_realizado, usuario_id)
+                VALUES (?, ?, ?)
+            `, [descripcion, cambioRealizado, userId]);
+
             res.status(200).json({ message: 'Inventario marcado como inactivo exitosamente' });
         } else {
             res.status(404).json({ error: 'Inventario no encontrado' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Error al inactivar el inventario' });
+        res.status(500).json({ error: 'Error al marcar el inventario como inactivo' });
     }
 };
-
-

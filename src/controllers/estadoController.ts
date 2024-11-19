@@ -67,6 +67,7 @@ export const getLog = async (req: Request, res: Response): Promise<void> => {
                 usuario.nombre AS usuario_nombre
             FROM logs
             JOIN usuario ON logs.usuario_id = usuario.id
+            ORDER BY logs.id DESC;
         `);
 
         res.status(200).json(logs);

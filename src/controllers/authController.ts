@@ -37,8 +37,9 @@ const generarNombreUsuario = async (nombre: string): Promise<string> => {
     return username;
 };
 
-
 export const registro = async (req: Request, res: Response): Promise<void> => {
+    const user = (req as any).user?.id; // ID del usuario autenticado
+
     const { nombre, rol_id, correo } = req.body;
 
     // Validar que todos los campos requeridos estén presentes
@@ -66,9 +67,19 @@ export const registro = async (req: Request, res: Response): Promise<void> => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Guardar el usuario en la base de datos
-        await pool.query(
+        const [result]: any = await pool.query(
             'INSERT INTO usuario (nombre, usuario, contraseña, rol_id, correo) VALUES (?, ?, ?, ?, ?)',
             [nombre, usuario, hashedPassword, rol_id, correo]
+        );
+
+        const userId = result.insertId; // ID del nuevo usuario creado
+
+        // Registrar el cambio en los logs
+        const descripcion = `Nuevo usuario registrado: ${nombre}`;
+        const detalleCambio = `ID: ${userId}, Nombre: ${nombre}, Usuario: ${usuario}, Rol ID: ${rol_id}, Correo: ${correo}`;
+        await pool.query(
+            'INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)',
+            [descripcion, detalleCambio, user] // Asumimos que el registro inicial no tiene usuario autenticado
         );
 
         // Responder con un mensaje de éxito incluyendo el usuario y la contraseña generada
@@ -83,6 +94,7 @@ export const registro = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ error: 'Error al registrar el usuario' });
     }
 };
+
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { usuario, contraseña } = req.body;

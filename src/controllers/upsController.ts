@@ -161,6 +161,8 @@ export const getUpsPorIdConHistorial = async (req: Request, res: Response): Prom
 
 // Crear una nueva UPS
 export const crearUps = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user?.id; // ID del usuario autenticado
+
     try {
         const { nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
 
@@ -191,6 +193,10 @@ export const crearUps = async (req: Request, res: Response): Promise<void> => {
             [nombre, modelo, direccion_ip, kva, fecha_instalacion, años_uso, proximo_cambio, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion]
         );
 
+        const descripcion = `Se creó un nuevo UPS: ${nombre}`;
+        const cambioRealizado = `Nombre: ${nombre}, Modelo: ${modelo}, Direccion IP: ${direccion_ip}, KVA: ${kva}, Fecha Instalacion: ${fecha_instalacion}, Años Uso: ${años_uso}, Proximo Cambio: ${proximo_cambio}, Modulos: ${modulos}, Baterias: ${baterias}, Agencias Id: ${agencias_id}, Estado: ${estado_ups_id}, Tipo Tamaño: ${tipo_tamano_id}, Observacion: ${observacion}`;
+        await pool.query(`INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`, [descripcion, cambioRealizado, userId]);
+
         res.status(201).json({ message: 'UPS creada exitosamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear la UPS' });
@@ -199,6 +205,8 @@ export const crearUps = async (req: Request, res: Response): Promise<void> => {
 
 // Actualizar una UPS existente
 export const actualizarUps = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user?.id; // ID del usuario autenticado
+
     try {
         const { id } = req.params;
         const { nombre, modelo, direccion_ip, kva, años_uso, modulos, baterias, agencias_id, estado_ups_id, tipo_tamano_id, observacion } = req.body;
@@ -223,6 +231,36 @@ export const actualizarUps = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
+        // Obtener la UPS actual para comparar cambios
+        const [upsActual]: any = await pool.query('SELECT * FROM ups WHERE id = ?', [id]);
+        if (upsActual.length === 0) {
+            res.status(404).json({ error: 'UPS no encontrada' });
+            return;
+        }
+
+        // Preparar registro de cambios
+        const cambios = [];
+        const ups = upsActual[0];
+
+        if (nombre !== ups.nombre) cambios.push(`Nombre: ${ups.nombre} -> ${nombre}`);
+        if (modelo !== ups.modelo) cambios.push(`Modelo: ${ups.modelo} -> ${modelo}`);
+        if (direccion_ip !== ups.direccion_ip) cambios.push(`IP: ${ups.direccion_ip} -> ${direccion_ip}`);
+        if (kva !== ups.kva) cambios.push(`KVA: ${ups.kva} -> ${kva}`);
+        if (años_uso !== ups.años_uso) cambios.push(`Años uso: ${ups.años_uso} -> ${años_uso}`);
+        if (modulos !== ups.modulos) cambios.push(`Módulos: ${ups.modulos} -> ${modulos}`);
+        if (baterias !== ups.baterias) cambios.push(`Baterías: ${ups.baterias} -> ${baterias}`);
+        if (agencias_id !== ups.agencias_id) cambios.push(`Agencia: ${ups.agencias_id} -> ${agencias_id}`);
+        if (estado_ups_id !== ups.estado_ups_id) cambios.push(`Estado: ${ups.estado_ups_id} -> ${estado_ups_id}`);
+        if (tipo_tamano_id !== ups.tipo_tamano_id) cambios.push(`Tipo tamaño: ${ups.tipo_tamano_id} -> ${tipo_tamano_id}`);
+        if (observacion !== ups.observacion) cambios.push(`Observación: ${ups.observacion} -> ${observacion}`);
+
+        // Si no hubo cambios, no actualizar
+        if (cambios.length === 0) {
+            res.status(400).json({ error: 'No se realizaron cambios' });
+            return;
+        }
+
+        // Actualizar la UPS
         const [result]: any = await pool.query(`
             UPDATE ups
             SET nombre = ?, modelo = ?, direccion_ip = ?, kva = ?, años_uso = ?, modulos = ?, baterias = ?, agencias_id = ?, estado_ups_id = ?, tipo_tamano_id = ?, observacion = ?
@@ -231,6 +269,10 @@ export const actualizarUps = async (req: Request, res: Response): Promise<void> 
         );
 
         if (result.affectedRows > 0) {
+            const descripcion = `UPS actualizada: ${nombre}`;
+            const cambioRealizado = cambios.join(', ');
+            await pool.query(`INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`, [descripcion, cambioRealizado, userId]);
+
             res.status(200).json({ message: 'UPS actualizada exitosamente' });
         } else {
             res.status(404).json({ error: 'UPS no encontrada' });
@@ -240,14 +282,31 @@ export const actualizarUps = async (req: Request, res: Response): Promise<void> 
     }
 };
 
+
 // Eliminar (cambiar estado) una UPS
 export const eliminarUps = async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user?.id; // ID del usuario autenticado
+
     try {
         const { id } = req.params;
 
+        // Verificar si la UPS existe antes de marcarla como inactiva
+        const [upsActual]: any = await pool.query('SELECT nombre FROM ups WHERE id = ?', [id]);
+        if (upsActual.length === 0) {
+            res.status(404).json({ error: 'UPS no encontrada' });
+            return;
+        }
+
+        const nombreUps = upsActual[0].nombre;
+
+        // Cambiar estado a inactivo (asumiendo que estado_ups_id = 2 significa inactivo)
         const [result]: any = await pool.query('UPDATE ups SET estado_ups_id = 2 WHERE id = ?', [id]);
 
         if (result.affectedRows > 0) {
+            const descripcion = `UPS marcada como inactiva: ${nombreUps}`;
+            const cambioRealizado = `Estado cambiado a inactivo (ID: 2)`;
+            await pool.query(`INSERT INTO logs (descripcion, cambio_realizado, usuario_id) VALUES (?, ?, ?)`, [descripcion, cambioRealizado, userId]);
+
             res.status(200).json({ message: 'UPS marcada como inactiva exitosamente' });
         } else {
             res.status(404).json({ error: 'UPS no encontrada' });

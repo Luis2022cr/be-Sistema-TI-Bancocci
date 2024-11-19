@@ -10,6 +10,7 @@ import { insertRolesIfNotExists } from "./inserts/insertRoles";
 import { insertTipoInventarioIfNotExists } from "./inserts/insertTipoInventario";
 import { insertTipoTamanoIfNotExists } from "./inserts/insertTipoTamano";
 import { insertUpsIfNotExists } from "./inserts/insertUps";
+import { insertUpsMapa } from "./inserts/insertUpsMapa";
 import { insertAdminIfNotExists } from "./inserts/insertUsuario";
 import pool from "./mysql";
 
@@ -218,6 +219,8 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertModelos(connection);
          //Insert UPS 
          await insertUpsIfNotExists(connection);
+         //insert mapa
+         await insertUpsMapa(connection);
 
         connection.release();
 
@@ -227,3 +230,4 @@ const crearTablasEnLaBaseDeDatos = async () => {
 };
 
 export default crearTablasEnLaBaseDeDatos;
+

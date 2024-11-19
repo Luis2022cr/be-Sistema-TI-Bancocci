@@ -29,7 +29,7 @@ import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/not
 const router: Router = Router();
 
 // Rutas de autenticación
-router.post('/auth/registro', registro);
+router.post('/auth/registro',authenticateJWT, registro);
 router.post('/auth/login', login);
 router.put('/auth/cambio-contrasena',authenticateJWT, cambiarContraseña);
 router.put('/auth/cambio-contrasena-admin/:id', cambiarContraseñaPorAdmin);
@@ -50,8 +50,6 @@ router.put('/roles/:id', actualizaRol);
 router.get('/tipo_inventarios', getTipoInventario);
 router.post('/tipo_inventarios', crearTipoInventario);
 router.put('/tipo_inventarios/:id', actualizarTipoInventario);
-
-
 
 // Rutas de Departamentos
 router.get('/departamentos', getDepto);
@@ -81,7 +79,6 @@ router.get('/estados_inventarios', getEstado);
 router.post('/estados_inventarios', crearEstado);
 router.put('/estados_inventarios/:id', actualizarEstado);
 
-
 // Rutas de Estado UPS
 router.get('/estado_ups', getEstadoUps);
 router.post('/estado_ups', crearEstadoUps);
@@ -93,33 +90,33 @@ router.post('/estado_agencias', crearEstadoAgencias);
 router.put('/estado_agencias/:id', actualizarEstadoAgencias);
 
 // Rutas para historial_cambio_ups
-router.get('/historial_cambio_ups', obtenerHistorialCambioUPS);  
-router.post('/historial_cambio_ups', crearHistorialCambioUPS);    
-router.put('/historial_cambio_ups/:id', actualizarHistorialCambioUPS); 
+router.get('/historial_cambio_ups',authenticateJWT, obtenerHistorialCambioUPS);  
+router.post('/historial_cambio_ups',authenticateJWT, crearHistorialCambioUPS);    
+router.put('/historial_cambio_ups/:id',authenticateJWT, actualizarHistorialCambioUPS); 
 
 // Rutas de Estado Agencias
 router.get('/agencias', getAgencias);
 router.get('/agencia/:id', getAgenciasById);
-router.post('/crear_agencias', crearAgencias);
-router.put('/actualizar-agencia/:id', actualizarAgencias);
-router.patch('/agencias/:id/estado', actualizarEstadoAgencia);
+router.post('/crear_agencias',authenticateJWT, crearAgencias);
+router.put('/actualizar-agencia/:id',authenticateJWT, actualizarAgencias);
+router.patch('/agencias/:id/estado',authenticateJWT, actualizarEstadoAgencia);
 
 
 // Rutas de Estado directorios
-router.get('/directorios', getDirectorios);
-router.get('/directorios/:id', getDirectoriosById);
-router.post('/directorios', crearDirectorio);
-router.put('/directorios/:id', actualizarDirectorio);
-router.delete('/directorios/:id', eliminarDirectorio);
+router.get('/directorios',authenticateJWT, getDirectorios);
+router.get('/directorios/:id',authenticateJWT, getDirectoriosById);
+router.post('/directorios',authenticateJWT, crearDirectorio);
+router.put('/directorios/:id',authenticateJWT, actualizarDirectorio);
+router.delete('/directorios/:id',authenticateJWT, eliminarDirectorio);
 
 // Rutas de UPS
 router.get('/ups', getUps);
 router.get('/ups/:id', getUpsById); 
 router.get('/ups-select', getUpsSelect);
 router.get('/ups/:id/historial', getUpsPorIdConHistorial); 
-router.post('/ups', crearUps);
-router.put('/ups/:id', actualizarUps);
-router.patch('/ups/:id/estado', eliminarUps);
+router.post('/ups', authenticateJWT, crearUps);
+router.put('/ups/:id',authenticateJWT, actualizarUps);
+router.patch('/ups/:id/estado',authenticateJWT, eliminarUps);
 
 //ruta para calendario
 router.get('/calendario/ups', getcalendarUPS);
@@ -128,9 +125,9 @@ router.get('/calendario/ups', getcalendarUPS);
 router.get('/logs', getLog);
 
 // Rutas para el CRUD de UPS Mapa
-router.get('/ups-mapa', getUpsMapa);
-router.post('/ups-mapa', createUpsMapa);
-router.delete('/ups-mapa/:id', deleteUpsMapa);
+router.get('/ups-mapa',authenticateJWT, getUpsMapa);
+router.post('/ups-mapa',authenticateJWT, createUpsMapa);
+router.delete('/ups-mapa/:id',authenticateJWT, deleteUpsMapa);
 
 // Rutas de Inventarios
 router.get('/inventarios', getInventarios);
@@ -144,7 +141,7 @@ router.get('/inventarios/:tipo_inventario_id/historial', getInventariosPorTipoCo
 // Rutas para historial_cambio_inventario
 router.get('/historial_inventario', obtenerHistorialCambioInventario);  
 router.post('/historial_inventario', authenticateJWT, crearHistorialCambioInventario);    
-router.put('/historial_inventario/:id', actualizarHistorialCambioInventario); 
+router.put('/historial_inventario/:id',authenticateJWT, actualizarHistorialCambioInventario); 
 
 // Ruta para obtener las notificaciones
 router.get('/notificaciones', getNotificacionesUps);  

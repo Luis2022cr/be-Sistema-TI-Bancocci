@@ -41,14 +41,7 @@ export const insertAgencias = async (connection: Connection) => {
     { nombre: 'Ag. San Luis', codigo: 208, ubicacion: 'Santa Bárbara', estado_agencias_id: 1 },
     { nombre: 'Ag. Colinas SB', codigo: 203, ubicacion: 'Santa Bárbara', estado_agencias_id: 1 },
     { nombre: 'Ag. Ocotepeque', codigo: 107, ubicacion: 'Ocotepeque', estado_agencias_id: 1 },
-    { nombre: 'Ag. El Junco', codigo: 248, ubicacion: 'Ocotepeque', estado_agencias_id: 1 },
-    // { nombre: 'Suc. SPS', codigo: '201', ubicacion: 'San Pedro Sula', estado_agencias_id: 1 },
-    // { nombre: 'Suc. Tegucigalpa', codigo: '401', ubicacion: 'Tegucigalpa', estado_agencias_id: 1 },
-    // { nombre: 'Suc. Choluteca', codigo: '501', ubicacion: 'Choluteca', estado_agencias_id: 1 },
-    // { nombre: 'Suc. Siguatepeque', codigo: '601', ubicacion: 'Siguatepeque', estado_agencias_id: 1 },
-    // { nombre: 'Suc. Comayagua', codigo: '701', ubicacion: 'Comayagua', estado_agencias_id: 1 },
-    // { nombre: 'Suc. Juticalpa', codigo: '801', ubicacion: 'Juticalpa', estado_agencias_id: 1 },
-    // { nombre: 'Suc. La Ceiba', codigo: '901', ubicacion: 'La Ceiba', estado_agencias_id: 1 },
+    { nombre: 'Ag. El Junco', codigo: 248, ubicacion: 'Ocotepeque', estado_agencias_id: 1 }
   ];
 
   // Extraer todos los códigos de agencias
