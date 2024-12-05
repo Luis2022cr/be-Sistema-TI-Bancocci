@@ -24,6 +24,14 @@ export const crearHistorialCambioUPS = async (req: Request, res: Response): Prom
             return;
         }
 
+        // Verificar que la fecha de próximo cambio no sea menor a la fecha de instalación
+        const fechaInstalacionDate = new Date(fecha_instalacion);
+        const proximoCambioDate = new Date(proximo_cambio);
+        if (proximoCambioDate <= fechaInstalacionDate) {
+            res.status(400).json({ error: 'La fecha de próximo cambio no puede ser menor o igual a la fecha de instalación' });
+            return;
+        }
+
         // Verificar que el ups_id exista en la tabla ups
         const [ups]: any = await pool.query('SELECT nombre FROM ups WHERE id = ?', [ups_id]);
         if (ups.length === 0) {
@@ -39,6 +47,13 @@ export const crearHistorialCambioUPS = async (req: Request, res: Response): Prom
             [ups_id, cambio, fecha_instalacion, proximo_cambio]
         );
 
+
+        // Actualizar las fechas y los años de uso en la tabla ups
+        await pool.query(
+            'UPDATE ups SET fecha_instalacion = ?, proximo_cambio = ? WHERE id = ?', 
+            [fecha_instalacion, proximo_cambio, ups_id]
+        );
+
         // Crear registro en logs
         const descripcion = `Historial de cambio creado para UPS: ${nombreUps}`;
         const cambioRealizado = `UPS ID: ${ups_id}, Cambio: ${cambio}, Fecha Instalación: ${fecha_instalacion}, Próximo Cambio: ${proximo_cambio}`;
@@ -47,12 +62,14 @@ export const crearHistorialCambioUPS = async (req: Request, res: Response): Prom
             [descripcion, cambioRealizado, userId]
         );
 
-        res.status(201).json({ message: 'Historial de cambio de UPS creado exitosamente' });
+        res.status(201).json({ message: 'Historial de cambio de UPS creado, fechas y años de uso actualizados exitosamente' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al crear el historial de cambios de UPS' });
     }
 };
+
+
 
 
 export const actualizarHistorialCambioUPS = async (req: Request, res: Response): Promise<void> => {
