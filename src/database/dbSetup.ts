@@ -184,9 +184,40 @@ const crearTablasEnLaBaseDeDatos = async () => {
                 fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (usuario_id) REFERENCES usuario(id)
             );`,
-
-        ];
  
+            `
+            CREATE TABLE IF NOT EXISTS reparaciones (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                fecha VARCHAR(50) NOT NULL,
+                tecnico VARCHAR(150) NOT NULL,
+                agencia VARCHAR(150) NOT NULL,
+                ticket_ayuda VARCHAR(100),
+                equipo_reparacion BOOLEAN DEFAULT FALSE,
+                equipo_prestado BOOLEAN DEFAULT FALSE,
+                otros_especificar VARCHAR(255),
+                cambio_equipo BOOLEAN DEFAULT FALSE,
+                devolucion_equipo BOOLEAN DEFAULT FALSE,
+                entrega_equipo BOOLEAN DEFAULT FALSE,
+                equipo_reparado BOOLEAN DEFAULT FALSE,
+                infraestructura BOOLEAN DEFAULT FALSE,
+                soporte BOOLEAN DEFAULT FALSE,
+                observaciones VARCHAR(500),
+                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ); `,
+        `CREATE TABLE IF NOT EXISTS equipos_reparacion (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            reparacion_id INT NOT NULL,
+            descripcion_equipo VARCHAR(255),
+            inventario VARCHAR(100),
+            modelo_tipo VARCHAR(150),
+            serie VARCHAR(150),
+            pertenece VARCHAR(150),
+            destino VARCHAR(150),
+            FOREIGN KEY (reparacion_id) REFERENCES reparaciones(id) ON DELETE CASCADE
+        );`
+        ]; 
+
         for (const query of queries) {
             await connection.query(query);
         }
@@ -217,10 +248,10 @@ const crearTablasEnLaBaseDeDatos = async () => {
         await insertDirectorios(connection);
         //Insert Modelos 
         await insertModelos(connection);
-         //Insert UPS 
-         await insertUpsIfNotExists(connection);
-         //insert mapa
-         await insertUpsMapa(connection);
+        //Insert UPS 
+        await insertUpsIfNotExists(connection);
+        //insert mapa
+        await insertUpsMapa(connection);
 
         connection.release();
 

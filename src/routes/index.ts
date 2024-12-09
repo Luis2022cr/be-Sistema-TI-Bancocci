@@ -23,6 +23,7 @@ import { actualizarModelo, crearModelo, getModelo, getModeloById } from '../cont
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
 import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/notificacionesController';
+import { crearControlEquipo, obtenerReparacionesConEquipos, obtenerReparacionPorId } from '../controllers/ControlEquipoController';
 
 
 
@@ -146,5 +147,10 @@ router.put('/historial_inventario/:id',authenticateJWT, actualizarHistorialCambi
 // Ruta para obtener las notificaciones
 router.get('/notificaciones', getNotificacionesUps);  
 router.get('/notificaciones/check', checkNotificacionesUps);  
+
+// Ruta para obtener las control de equipo
+router.post('/control_equipo_pdf', crearControlEquipo);  
+router.get('/control_equipo', obtenerReparacionesConEquipos);  
+router.get('/control_equipo/:id', obtenerReparacionPorId);  
 
 export default router;

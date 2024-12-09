@@ -6,7 +6,7 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
     try {
         // Extraemos los posibles filtros desde los query params
         const { tipo_inventario_id } = req.query;
-        
+
         // Base query
         let query = `
             SELECT 
@@ -22,19 +22,19 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
             JOIN estado est ON i.estado_id = est.id
             JOIN usuario u ON i.usuario_id = u.id
         `;
-        
+
         // Array para los valores que pasaremos a la consulta
         const queryParams: any[] = [];
-        
+
         // Si el tipo_inventario_id está presente, añadimos una cláusula WHERE
         if (tipo_inventario_id) {
             query += ` WHERE i.tipo_inventario_id = ?`;
             queryParams.push(tipo_inventario_id);  // Agregamos el valor a los parámetros
         }
-        
+
         // Ejecutamos la consulta con los parámetros que tengamos
         const [inventarios] = await pool.query(query, queryParams);
-        
+
         // Devolvemos los resultados
         res.status(200).json(inventarios);
     } catch (error) {
@@ -118,8 +118,8 @@ WHERE i.id = ?;
         `, [id]);
 
         const inventarioConHistorial = {
-            ...inventario[0],  
-            historial: historial  
+            ...inventario[0],
+            historial: historial
         };
 
         res.status(200).json(inventarioConHistorial);
@@ -132,10 +132,10 @@ WHERE i.id = ?;
 
 export const getInventariosPorTipoConHistorial = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { tipo_inventario_id } = req.params;
-  
-      // Ejecutamos la consulta SQL filtrada por tipo_inventario_id
-      const [inventarios]: any = await pool.query(`
+        const { tipo_inventario_id } = req.params;
+
+        // Ejecutamos la consulta SQL filtrada por tipo_inventario_id
+        const [inventarios]: any = await pool.query(`
         SELECT 
             i.id AS "inventario_id",
             i.codigo,
@@ -176,57 +176,68 @@ export const getInventariosPorTipoConHistorial = async (req: Request, res: Respo
         AND hci.fecha_cambio >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
         ORDER BY i.id, hci.fecha_cambio;
       `, [tipo_inventario_id]);
-  
-      if (inventarios.length === 0) {
-        res.status(404).json({ error: 'No se encontraron inventarios para el tipo de inventario especificado' });
-        return;
-      }
-  
-      // Procesar el resultado para agrupar los historiales por inventario
-      const inventariosConHistorial = inventarios.reduce((acc: any[], inventario: any) => {
-        const { inventario_id, ...rest } = inventario;
-  
-        // Verificar si el inventario ya existe en el acumulador
-        let inventarioExistente = acc.find((item) => item.id === inventario_id);
-  
-        if (!inventarioExistente) {
-          inventarioExistente = { id: inventario_id, historial: [] };
-          acc.push(inventarioExistente);
-        }
-  
-        // Agregar el historial
-        inventarioExistente.historial.push({
-          cambio_realizado: inventario.cambio_realizado,
-          fecha_cambio: inventario.fecha_cambio,
-          usuario: inventario.historial_usuario,
-        });
-  
-        // Asignar información general del inventario (sin duplicados)
-        Object.assign(inventarioExistente, rest);
-  
-        return acc;
-      }, []);
-  
-      res.status(200).json(inventariosConHistorial);
-    } catch (error) {
-      console.error('Error al obtener los Inventarios con historial:', error);
-      res.status(500).json({ error: 'Error al obtener los Inventarios con historial' });
-    }
-  };
 
-  
+        if (inventarios.length === 0) {
+            res.status(404).json({ error: 'No se encontraron inventarios para el tipo de inventario especificado' });
+            return;
+        }
+
+        // Procesar el resultado para agrupar los historiales por inventario
+        const inventariosConHistorial = inventarios.reduce((acc: any[], inventario: any) => {
+            const { inventario_id, ...rest } = inventario;
+
+            // Verificar si el inventario ya existe en el acumulador
+            let inventarioExistente = acc.find((item) => item.id === inventario_id);
+
+            if (!inventarioExistente) {
+                inventarioExistente = { id: inventario_id, historial: [] };
+                acc.push(inventarioExistente);
+            }
+
+            // Agregar el historial
+            inventarioExistente.historial.push({
+                cambio_realizado: inventario.cambio_realizado,
+                fecha_cambio: inventario.fecha_cambio,
+                usuario: inventario.historial_usuario,
+            });
+
+            // Asignar información general del inventario (sin duplicados)
+            Object.assign(inventarioExistente, rest);
+
+            return acc;
+        }, []);
+
+        res.status(200).json(inventariosConHistorial);
+    } catch (error) {
+        console.error('Error al obtener los Inventarios con historial:', error);
+        res.status(500).json({ error: 'Error al obtener los Inventarios con historial' });
+    }
+};
+
+
 // Crear un nuevo inventario
 export const crearInventario = async (req: Request, res: Response): Promise<void> => {
     try {
         const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios } = req.body;
-        const userId = (req as any).user?.id; 
+        const userId = (req as any).user?.id;
 
         // Validar que todos los campos estén presentes
-        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || 
+        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id ||
             !agencias_id_origen || !agencias_id_actual || !estado_id || !userId) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
+        // Verificar si el código o la serie ya existen
+        const [inventarioExistente]: any = await pool.query(
+            'SELECT id FROM inventario WHERE codigo = ? OR serie = ?',
+            [codigo, serie]
+        );
+
+        if (inventarioExistente.length > 0) {
+            res.status(400).json({ error: 'El Numero de inventario o la serie ya están registrados' });
+            return;
+        }
+
 
         // Verificar si los IDs de las agencias, estado, tipo y usuario existen
         const [tipoInventario]: any = await pool.query('SELECT id FROM tipo_inventario WHERE id = ?', [tipo_inventario_id]);
@@ -235,7 +246,7 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
         const [estado]: any = await pool.query('SELECT id FROM estado WHERE id = ?', [estado_id]);
         const [usuario]: any = await pool.query('SELECT id FROM usuario WHERE id = ?', [userId]);
 
-        if (tipoInventario.length === 0 || marca.length === 0 || estado.length === 0 || usuario.length === 0) {
+        if (tipoInventario.length === 0 || marca.length === 0 || estado.length === 0 || usuario.length === 0 || modelo.lengt === 0) {
             res.status(400).json({ error: 'ID de tipo, marca, modelo, estado o usuario no válido' });
             return;
         }
@@ -256,14 +267,13 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
             INSERT INTO logs (descripcion, cambio_realizado, usuario_id)
             VALUES (?, ?, ?)
         `, [descripcion, cambioRealizado, userId]);
-        
+
         res.status(201).json({ message: 'Inventario creado exitosamente' });
     } catch (error) {
         res.status(500).json({ error: 'Error al crear el inventario' });
     }
 };
 
-// Actualizar un inventario existente
 // Actualizar un inventario existente
 export const actualizarInventario = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -277,6 +287,17 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
             return;
         }
 
+        // existe inventario
+        const [inventarioExistente]: any = await pool.query(
+            'SELECT id FROM inventario WHERE (codigo = ? OR serie = ?) AND id != ?',
+            [codigo, serie, id]
+        );
+        
+        if (inventarioExistente.length > 0) {
+            res.status(400).json({ error: 'El Codigo de inventario o la serie ya están registrados en otro inventario' });
+            return;
+        }
+        
         // Obtener el inventario actual antes de actualizar
         const [inventarioActual]: any = await pool.query(`
             SELECT codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios
@@ -366,7 +387,7 @@ export const eliminarInventario = async (req: Request, res: Response): Promise<v
 
         // Actualizar el estado del inventario a inactivo
         const [result]: any = await pool.query(
-            'UPDATE inventario SET estado_id = ? WHERE id = ?', 
+            'UPDATE inventario SET estado_id = ? WHERE id = ?',
             [estadoInactivoId, id]
         );
 
