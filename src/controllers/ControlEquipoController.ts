@@ -23,7 +23,7 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
 
         // Validar campos obligatorios
         if (!fecha || !tecnico || !agencia) {
-            res.status(400).json({ error: 'Los campos fecha, técnico, agencia y ticket de ayuda son obligatorios.' });
+            res.status(400).json({ error: 'Los campos fecha, técnico, agencia son obligatorios.' });
             return;
         }
 
@@ -80,11 +80,27 @@ export const obtenerReparacionesConEquipos = async (req: Request, res: Response)
     try {
         // Obtener todas las reparaciones con sus respectivos equipos
         const [reparaciones]: any = await pool.query(`
-            SELECT r.id AS reparacion_id, r.fecha, r.tecnico, r.agencia, r.ticket_ayuda,
-                   r.equipo_reparacion, r.equipo_prestado, r.otros_especificar, r.cambio_equipo,
-                   r.devolucion_equipo, r.entrega_equipo, r.equipo_reparado, r.infraestructura,
-                   r.soporte, r.observaciones, r.fecha_creacion, r.fecha_modificacion
-            FROM reparaciones r
+            SELECT 
+                r.id AS reparacion_id, 
+                r.fecha, 
+                r.tecnico, 
+                r.agencia, 
+                r.ticket_ayuda,
+                r.equipo_reparacion, 
+                r.equipo_prestado, 
+                r.otros_especificar, 
+                r.cambio_equipo,
+                r.devolucion_equipo, 
+                r.entrega_equipo, 
+                r.equipo_reparado, 
+                r.infraestructura,
+                r.soporte, 
+                r.observaciones, 
+                r.fecha_creacion
+            FROM 
+                reparaciones r
+            ORDER BY 
+                r.fecha_creacion DESC;
         `);
 
         if (reparaciones.length === 0) {

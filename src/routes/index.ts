@@ -25,8 +25,6 @@ import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, ob
 import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/notificacionesController';
 import { crearControlEquipo, obtenerReparacionesConEquipos, obtenerReparacionPorId } from '../controllers/ControlEquipoController';
 
-
-
 const router: Router = Router();
 
 // Rutas de autenticación

@@ -12,7 +12,7 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
             SELECT 
                 i.id, i.codigo, i.serie, i.comentarios, i.fecha_creacion, i.fecha_modificacion, 
                 ti.nombre AS tipo_inventario, m.nombre AS marca, md.nombre as modelo, ag_origen.nombre AS agencia_origen, 
-                ag_actual.nombre AS agencia_actual, est.nombre AS estado, u.nombre AS usuario
+                ag_actual.nombre AS agencia_actual, ag_origen.codigo AS codigo_agencia_origen, est.nombre AS estado, u.nombre AS usuario
             FROM inventario i
             JOIN tipo_inventario ti ON i.tipo_inventario_id = ti.id
             JOIN marca m ON i.marca_id = m.id
