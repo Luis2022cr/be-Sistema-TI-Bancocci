@@ -2,24 +2,25 @@ import { Request, Response } from 'express';
 import pool from '../database/mysql';
 
 export const crearControlEquipo = async (req: Request, res: Response): Promise<void> => {
+    const {
+        fecha,
+        tecnico,
+        agencia,
+        ticketAyuda,
+        equipoReparacion,
+        equipoPrestado,
+        otrosEspecificar,
+        cambioEquipo,
+        devolucionEquipo,
+        entregaEquipo,
+        equipoReparado,
+        infraestructura,
+        soporte,
+        observaciones,
+        equipos, // Array de equipos
+    } = req.body;
+    
     try {
-        const {
-            fecha,
-            tecnico,
-            agencia,
-            ticketAyuda,
-            equipoReparacion,
-            equipoPrestado,
-            otrosEspecificar,
-            cambioEquipo,
-            devolucionEquipo,
-            entregaEquipo,
-            equipoReparado,
-            infraestructura,
-            soporte,
-            observaciones,
-            equipos, // Array de equipos
-        } = req.body;
 
         // Validar campos obligatorios
         if (!fecha || !tecnico || !agencia) {
@@ -66,6 +67,43 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
                     serie, pertenece, destino
                 ) VALUES ?
             `, [valoresEquipos]);
+
+            // Procesar cada equipo para actualizar el inventario
+            for (const equipo of equiposValidos) {
+                const { inventario, serie, destino } = equipo;
+
+                // Verificar si el equipo existe en el inventario por inventario o serie
+                const [resultInventario]: any = await pool.query(
+                    `SELECT id FROM inventario WHERE codigo = ? OR serie = ? LIMIT 1`,
+                    [inventario, serie]
+                );
+
+                if (resultInventario.length > 0) {
+                    const inventarioId = resultInventario[0].id;
+
+                    // Extraer el código de la agencia desde el campo destino
+                    const match = destino.match(/\d+/); // Extrae el primer número encontrado
+                    if (match) {
+                        const codigoAgencia = parseInt(match[0], 10);
+
+                        // Buscar el ID de la agencia por el código
+                        const [resultAgencia]: any = await pool.query(
+                            `SELECT id FROM agencias WHERE codigo = ? LIMIT 1`,
+                            [codigoAgencia]
+                        );
+
+                        if (resultAgencia.length > 0) {
+                            const agenciaId = resultAgencia[0].id;
+
+                            // Actualizar la agencia actual en el inventario
+                            await pool.query(
+                                `UPDATE inventario SET agencias_id_actual = ? WHERE id = ?`,
+                                [agenciaId, inventarioId]
+                            );
+                        }
+                    }
+                }
+            }
         }
 
         res.status(201).json({ message: 'Reparación y equipos registrados exitosamente.' });
