@@ -3,7 +3,7 @@ import { Connection } from 'mysql2/promise';
 // Función para insertar los estados solo si no existen
 export const insertEstadoIfNotExists = async (connection: Connection) => {
   // Nombres de los estados que queremos verificar e insertar
-  const estadosToCheck = ['Buen estado', 'En mantenimiento', 'reparado', 'fuera de servicio'];
+  const estadosToCheck = ['Operativo', 'En mantenimiento', 'Con Fallas', 'Baja/Obsoleto'];
 
   // Verificar cuántos de los estados ya existen
   const checkEstadosSQL = `

@@ -3,7 +3,7 @@ import { Connection } from 'mysql2/promise';
 // Función para insertar los estados de agencia solo si no existen
 export const insertEstadoAgenciasIfNotExists = async (connection: Connection) => {
   // Nombres de los estados que queremos verificar e insertar
-  const estadosToCheck = ['activo', 'inactivo'];
+  const estadosToCheck = ['Operativo', 'Inactivo'];
 
   // Verificar cuántos de los estados ya existen
   const checkEstadosSQL = `

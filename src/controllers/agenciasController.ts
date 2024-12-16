@@ -91,33 +91,4 @@ export const actualizarAgencias = async (req: Request, res: Response): Promise<v
     }
 };
 
-// Actualizar solo el estado de una agencia
-export const actualizarEstadoAgencia = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { id } = req.params;
-
-        // Validación para asegurarse de que el estado_agencias_id esté presente
-        if (!id) {
-            res.status(400).json({ error: 'El requerido' });
-            return;
-        }
-
-        // Consulta SQL para actualizar solo el estado
-        const [result]: any = await pool.query(`
-            UPDATE agencias 
-            SET estado_agencias_id = 2
-            WHERE id = ?`, 
-            [id]
-        );
-
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Estado de la agencia actualizado exitosamente' });
-        } else {
-            res.status(404).json({ error: 'Agencia no encontrada' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error al actualizar el estado de la agencia' });
-    }
-};
- 
 

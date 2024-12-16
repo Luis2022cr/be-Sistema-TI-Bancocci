@@ -97,9 +97,12 @@ export const crearControlEquipo = async (req: Request, res: Response): Promise<v
 
                             // Actualizar la agencia actual en el inventario
                             await pool.query(
-                                `UPDATE inventario SET agencias_id_actual = ? WHERE id = ?`,
-                                [agenciaId, inventarioId]
+                                `UPDATE inventario 
+                                 SET agencias_id_actual = ?, estado_id = ? 
+                                 WHERE id = ?`,
+                                [agenciaId, 1, inventarioId] 
                             );
+                            
                         }
                     }
                 }

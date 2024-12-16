@@ -12,7 +12,6 @@ export const getMarca = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
 export const getMarcaById = async (req: Request, res: Response): Promise<void> => {
     try {
         const { id } = req.params;

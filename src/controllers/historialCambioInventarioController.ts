@@ -40,7 +40,7 @@ export const crearHistorialCambioInventario = async (req: Request, res: Response
 
         // Verificar que el inventario_id exista en la tabla inventario
         const [inventario]: any = await pool.query(`
-            SELECT ti.nombre AS nombre_inventario
+            SELECT ti.nombre AS nombre_inventario, i.comentarios
             FROM inventario i
             JOIN tipo_inventario ti ON i.tipo_inventario_id = ti.id
             WHERE i.id = ?`, 
@@ -53,11 +53,24 @@ export const crearHistorialCambioInventario = async (req: Request, res: Response
         }
 
         const nombreInventario = inventario[0].nombre_inventario;
+        const comentariosAnteriores = inventario[0].comentarios || '';
 
         // Insertar el historial de cambio en la tabla historial_cambio_inventario
         await pool.query(
             'INSERT INTO historial_cambio_inventario (inventario_id, cambio_realizado, usuario_id, fecha_cambio) VALUES (?, ?, ?, ?)',
             [inventario_id, cambio_realizado, userId, fecha_cambio]
+        );
+
+        // Actualizar el campo `comentarios` en la tabla inventario
+        const nuevosComentarios = comentariosAnteriores 
+            ? `${comentariosAnteriores} | ${cambio_realizado}` 
+            : cambio_realizado;
+
+        await pool.query(
+            `UPDATE inventario 
+             SET comentarios = ?, fecha_modificacion = CURRENT_TIMESTAMP 
+             WHERE id = ?`,
+            [nuevosComentarios, inventario_id]
         );
 
         // Registrar el cambio en la tabla de logs
@@ -68,12 +81,13 @@ export const crearHistorialCambioInventario = async (req: Request, res: Response
             [descripcion, detalleCambio, userId]
         );
 
-        res.status(201).json({ message: 'Historial de cambio de Inventario creado exitosamente' });
+        res.status(201).json({ message: 'Historial de cambio de Inventario creado exitosamente y actualizado en comentarios' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al crear el historial de cambios de Inventario' });
     }
 };
+
 
 export const actualizarHistorialCambioInventario = async (req: Request, res: Response): Promise<void> => {
     try {

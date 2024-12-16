@@ -5,7 +5,7 @@ export const insertDepartamentos = async (connection: Connection) => {
   // Nombres de los departamentos
   const departamentos = [
     'Gerente Regional TI - Zona Occidente',
-    'Administracion de Telefonea',
+    'Administracion de Telefonia',
     'Jefe Soporte Tecnico',
     'Soporte Tecnico',
     'Jefe de Taller',
