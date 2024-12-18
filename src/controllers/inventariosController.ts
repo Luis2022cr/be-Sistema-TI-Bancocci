@@ -27,13 +27,19 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
         // Array para los valores que pasaremos a la consulta
         const queryParams: any[] = [];
 
-        // Si el tipo_inventario_id está presente, añadimos una cláusula adicional
+        // Si se pasa un tipo_inventario_id, añadimos la cláusula correspondiente
         if (tipo_inventario_id) {
-            query += ` AND i.tipo_inventario_id = ?`;
-            queryParams.push(tipo_inventario_id); // Agregamos el valor a los parámetros
+            // Si el tipo_inventario_id es 9, se filtra solo para tipo 9
+            if (parseInt(tipo_inventario_id as string) === 9) {
+                query += ` AND i.tipo_inventario_id >= 9`; // Solo muestra inventarios de tipo 9
+            } else {
+                // Si el tipo_inventario_id no es 9, solo muestra los inventarios de ese tipo específico
+                query += ` AND i.tipo_inventario_id = ?`; // Filtro para el tipo específico
+                queryParams.push(tipo_inventario_id); // Agregamos el valor del tipo_inventario_id
+            }
         }
 
-        // Ejecutamos la consulta con los parámetros que tengamos
+        // Ejecutamos la consulta con los parámetros
         const [inventarios] = await pool.query(query, queryParams);
 
         // Devolvemos los resultados
@@ -42,6 +48,8 @@ export const getInventarios = async (req: Request, res: Response): Promise<void>
         res.status(500).json({ error: 'Error al obtener los inventarios' });
     }
 };
+
+
 
 export const getInventarioPorEstadoOnsoleto = async (req: Request, res: Response): Promise<void> => {
     try {

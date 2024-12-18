@@ -24,6 +24,8 @@ import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaCon
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
 import { checkNotificacionesUps, getNotificacionesUps } from '../controllers/notificacionesController';
 import { crearControlEquipo, obtenerReparacionesConEquipos, obtenerReparacionPorId } from '../controllers/ControlEquipoController';
+import { importarInventario } from '../controllers/importExcelInventarioController';
+import multer from 'multer';
 
 const router: Router = Router();
 
@@ -137,5 +139,15 @@ router.get('/notificaciones/check', checkNotificacionesUps);
 router.post('/control_equipo_pdf', crearControlEquipo);  
 router.get('/control_equipo', obtenerReparacionesConEquipos);  
 router.get('/control_equipo/:id', obtenerReparacionPorId);  
+
+// Ruta para cargar archivo excel de inventario
+const upload = multer({ dest: 'uploads/' }); //
+router.post(
+  '/importar-inventario',
+  authenticateJWT,
+  upload.single('file'), // Subida del archivo Excel
+  importarInventario
+);
+
 
 export default router;

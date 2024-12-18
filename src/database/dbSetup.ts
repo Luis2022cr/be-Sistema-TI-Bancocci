@@ -20,10 +20,10 @@ const crearTablasEnLaBaseDeDatos = async () => {
         const connection = await pool.getConnection();
 
         // Crear la base de datos si no existe
-        await connection.query(`CREATE DATABASE IF NOT EXISTS sistema_ti_bancocci`);
+        await connection.query(`CREATE DATABASE IF NOT EXISTS sistema_ti_bancocci_zona_occidente`);
 
         // Seleccionar la base de datos
-        await connection.query(`USE sistema_ti_bancocci`);
+        await connection.query(`USE sistema_ti_bancocci_zona_occidente`);
 
         // Crear las tablas si no existen
         const queries = [

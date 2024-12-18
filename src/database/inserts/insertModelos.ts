@@ -26,7 +26,7 @@ export const insertModelos = async (connection: Connection) => {
     { nombre: 'OPTIPLEX 3070', marca_id: 1 },
     { nombre: 'OPTIPLEX 3080', marca_id: 1 },
     { nombre: 'OPTIPLEX 3090', marca_id: 1 },
-    { nombre: 'OPTIPLEX 7010SFF NM', marca_id: 1 },
+    { nombre: 'OPTIPLEX 7010SFF', marca_id: 1 },
     { nombre: 'OPTIPLEX 7010', marca_id: 1 },
     { nombre: 'LATITUDE E5440', marca_id: 1 },
     { nombre: 'LATITUDE E5450', marca_id: 1 },
