@@ -1,6 +1,4 @@
-// index.ts
 import { Router } from 'express';
-// Seguridad: Solo las personas autenticada pueden usar ese recurso:
 import { authenticateJWT } from '../middlewares/authMiddleware'; //ejemplo de uso= router.get('/ejemplo', authenticateJWT, getEjemplo);
 import { registro, login, cambiarContraseña, cambiarContraseñaPorAdmin } from '../controllers/authController';
 import { getRoles } from '../controllers/rolController';
@@ -15,10 +13,8 @@ import { getPerfilUsuario, actualizarPerfilUsuario, getUsuarios, actualizarDatos
 import { getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, crearAgencias, getAgencias, getAgenciasById } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
-
 import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS, getUpsById } from '../controllers/upsController';
 import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario, getInventarioPorIdConHistorial, getInventariosPorTipoConHistorial, getInventarioPorEstadoOnsoleto } from '../controllers/inventariosController';
-
 import { actualizarModelo, crearModelo, getModelo, getModeloById } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
@@ -142,12 +138,6 @@ router.get('/control_equipo/:id', obtenerReparacionPorId);
 
 // Ruta para cargar archivo excel de inventario
 const upload = multer({ dest: 'uploads/' }); //
-router.post(
-  '/importar-inventario',
-  authenticateJWT,
-  upload.single('file'), // Subida del archivo Excel
-  importarInventario
-);
-
+router.post('/importar-inventario',authenticateJWT,upload.single('file'),importarInventario);
 
 export default router;

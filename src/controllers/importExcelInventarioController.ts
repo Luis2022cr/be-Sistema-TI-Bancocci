@@ -74,9 +74,8 @@ export const importarInventario = async (req: Request, res: Response) => {
 
     for (const row of data) {
       const processedInventario = row.inventario
-      ? String(row.inventario).split('.')[0] 
-      : ''; 
-
+        ? String(row.inventario).split('.')[0] 
+        : ''; 
 
       // Comprobación de tipo de inventario y marca, considerando mayúsculas/minúsculas
       let tipoInventarioId = 9;
@@ -123,7 +122,13 @@ export const importarInventario = async (req: Request, res: Response) => {
             )
         : 5;
 
-      const estadoId = row.estado && estadoMap[row.estado] ? estadoMap[row.estado] : 1;
+      // Determinar el estado
+      let estadoId = row.estado && estadoMap[row.estado] ? estadoMap[row.estado] : 1;
+
+      // Si agencia_actual indica "obsoleto", forzar estado a 4
+      if (row.agencia_actual && row.agencia_actual.toLowerCase().includes('obsoleto')) {
+        estadoId = 4;
+      }
 
       // Verificar si ya existe un registro con el mismo código o serie
       const [existingRecord] = await pool.query<RowDataPacket[]>(
