@@ -258,7 +258,7 @@ export const getInventariosPorTipoConHistorial = async (req: Request, res: Respo
 // Crear un nuevo inventario
 export const crearInventario = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios } = req.body;
+        const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios,fecha_creacion } = req.body;
         const userId = (req as any).user?.id;
 
         // Validar que todos los campos estén presentes
@@ -294,13 +294,13 @@ export const crearInventario = async (req: Request, res: Response): Promise<void
         // Crear el inventario
         await pool.query(`
             INSERT INTO inventario (codigo, serie, tipo_inventario_id, 
-            marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, usuario_id, comentarios)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios]);
+            marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, usuario_id, comentarios, fecha_creacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios, fecha_creacion]);
 
         // Crear el log del inventario creado
         const descripcion = `Se creó un nuevo inventario con código: ${codigo}, serie: ${serie}.`;
-        const cambioRealizado = `Código: ${codigo}, Serie: ${serie}, Tipo Inventario ID: ${tipo_inventario_id}, Marca ID: ${marca_id}, Modelo ID: ${modelo_id}, Agencia Origen ID: ${agencias_id_origen}, Agencia Actual ID: ${agencias_id_actual}, Estado ID: ${estado_id}
+        const cambioRealizado = `Código: ${codigo}, Serie: ${serie}, Tipo Inventario ID: ${tipo_inventario_id}, Marca ID: ${marca_id}, Modelo ID: ${modelo_id}, Agencia Origen ID: ${agencias_id_origen}, Agencia Actual ID: ${agencias_id_actual}, Estado ID: ${estado_id}, Fecha de creacion: ${fecha_creacion}
         `;
 
         await pool.query(`
@@ -318,10 +318,10 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
     try {
         const userId = (req as any).user?.id; // ID del usuario autenticado
         const { id } = req.params;
-        const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios } = req.body;
+        const { codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios, fecha_creacion } = req.body;
 
         // Validar que todos los campos estén presentes
-        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || !agencias_id_origen || !agencias_id_actual || !estado_id) {
+        if (!codigo || !serie || !tipo_inventario_id || !marca_id || !modelo_id || !agencias_id_origen || !agencias_id_actual || !estado_id || !fecha_creacion) {
             res.status(400).json({ error: 'Todos los campos son obligatorios' });
             return;
         }
@@ -339,7 +339,7 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
 
         // Obtener el inventario actual antes de actualizar
         const [inventarioActual]: any = await pool.query(`
-            SELECT codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios
+            SELECT codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, comentarios, fecha_creacion
             FROM inventario
             WHERE id = ?
         `, [id]);
@@ -379,9 +379,9 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
         // Actualizar el inventario
         const [result]: any = await pool.query(`
             UPDATE inventario
-            SET codigo = ?, serie = ?, tipo_inventario_id = ?, marca_id = ?, modelo_id = ?, agencias_id_origen = ?, agencias_id_actual = ?, estado_id = ?, usuario_id = ?, comentarios = ?
+            SET codigo = ?, serie = ?, tipo_inventario_id = ?, marca_id = ?, modelo_id = ?, agencias_id_origen = ?, agencias_id_actual = ?, estado_id = ?, usuario_id = ?, comentarios = ?, fecha_creacion= ?
             WHERE id = ?
-        `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios, id]);
+        `, [codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, userId, comentarios, fecha_creacion, id]);
 
         if (result.affectedRows > 0) {
             // Comparar los campos modificados y generar el log de cambios
@@ -403,6 +403,7 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
             registrarCambio('Agencia Actual', nombresAnterior.agencia_actual, nombresNuevo.agencia_actual);
             registrarCambio('Estado', nombresAnterior.estado, nombresNuevo.estado);
             registrarCambio('Comentarios', inventarioAnterior.comentarios, comentarios);
+            registrarCambio('Fecha de Instalacion', inventarioAnterior.fecha_creacion, fecha_creacion);
 
             // Generar la descripción y el cambio realizado para el log
             const descripcion = `Se actualizó el inventario con código: ${inventarioAnterior.codigo}.`;
@@ -422,55 +423,5 @@ export const actualizarInventario = async (req: Request, res: Response): Promise
         }
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar el inventario' });
-    }
-};
-
-
-
-// Eliminar (cambiar estado) un inventario
-
-export const eliminarInventario = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const userId = (req as any).user?.id; // ID del usuario autenticado
-        const { id } = req.params;
-        const estadoInactivoId = 4; // ID del estado inactivo/eliminado
-
-        // Obtener el inventario actual antes de cambiar el estado
-        const [inventarioActual]: any = await pool.query(`
-            SELECT codigo, serie, estado_id
-            FROM inventario
-            WHERE id = ?
-        `, [id]);
-
-        if (inventarioActual.length === 0) {
-            res.status(404).json({ error: 'Inventario no encontrado' });
-            return;
-        }
-
-        const inventarioAnterior = inventarioActual[0];
-        const estadoAnterior = inventarioAnterior.estado_id;
-
-        // Actualizar el estado del inventario a inactivo
-        const [result]: any = await pool.query(
-            'UPDATE inventario SET estado_id = ? WHERE id = ?',
-            [estadoInactivoId, id]
-        );
-
-        if (result.affectedRows > 0) {
-            // Crear log del cambio de estado
-            const descripcion = `Se cambió el estado del inventario con ID: ${id} a inactivo.`;
-            const cambioRealizado = `Código: ${inventarioAnterior.codigo}, Serie: ${inventarioAnterior.serie}, Estado anterior ID: ${estadoAnterior} -> Estado nuevo ID: ${estadoInactivoId}`;
-
-            await pool.query(`
-                INSERT INTO logs (descripcion, cambio_realizado, usuario_id)
-                VALUES (?, ?, ?)
-            `, [descripcion, cambioRealizado, userId]);
-
-            res.status(200).json({ message: 'Inventario marcado como inactivo exitosamente' });
-        } else {
-            res.status(404).json({ error: 'Inventario no encontrado' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error al marcar el inventario como inactivo' });
     }
 };

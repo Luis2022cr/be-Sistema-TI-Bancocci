@@ -63,7 +63,7 @@ export const crearHistorialCambioInventario = async (req: Request, res: Response
 
         // Actualizar el campo `comentarios` en la tabla inventario
         const nuevosComentarios = comentariosAnteriores 
-            ? `${comentariosAnteriores} | ${cambio_realizado}` 
+            ? ` ${cambio_realizado}` 
             : cambio_realizado;
 
         await pool.query(

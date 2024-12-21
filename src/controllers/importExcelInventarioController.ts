@@ -31,7 +31,6 @@ const obtenerOcrear = async (
       return rows[0].id; // Si ya existe, retorna el ID
     }
 
-    // Si no existe, inserta el nuevo valor
     const columns = [column, ...Object.keys(additionalData)];
     const values = [value, ...Object.values(additionalData)];
 
@@ -62,6 +61,34 @@ export const importarInventario = async (req: Request, res: Response) => {
 
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
+    const rawData: any[][] = xlsx.utils.sheet_to_json<any[]>(workbook.Sheets[sheetName], { header: 1 });
+
+    if (rawData.length === 0) {
+      return res.status(400).json({ error: 'El archivo está vacío o no contiene encabezados.' });
+    }
+
+    // Verificar los encabezados
+    const expectedHeaders = [
+      'inventario',
+      'serie',
+      'tipo_inventario',
+      'marca',
+      'modelo',
+      'agencia_origen',
+      'agencia_actual',
+      'comentarios',
+    ];
+
+    const headers = rawData[0].map((header: string) => header.toLowerCase().trim());
+
+    const missingHeaders = expectedHeaders.filter(header => !headers.includes(header));
+    if (missingHeaders.length > 0) {
+      return res.status(400).json({
+        error: `Los siguientes encabezados faltan o están mal escritos (Debe tener el mismo nombre): ${missingHeaders.join(', ')}`
+      });
+    }
+
+    // Remover encabezados de los datos
     const data: InventarioRow[] = xlsx.utils.sheet_to_json<InventarioRow>(workbook.Sheets[sheetName]);
 
     // Mapeo de estados del Excel a la base de datos
@@ -70,14 +97,13 @@ export const importarInventario = async (req: Request, res: Response) => {
       'Trasladado': 5,
       'Retirado Obsoleto': 4,
       'Retirada por Daño': 3,
-    };
+    }; 
 
     for (const row of data) {
       const processedInventario = row.inventario
         ? String(row.inventario).split('.')[0] 
         : ''; 
 
-      // Comprobación de tipo de inventario y marca, considerando mayúsculas/minúsculas
       let tipoInventarioId = 9;
       if (row.tipo_inventario) {
         if (row.tipo_inventario.toLowerCase() === 'impresora' && row.marca?.toLowerCase() === 'olivetti') {
@@ -100,13 +126,15 @@ export const importarInventario = async (req: Request, res: Response) => {
       };
 
       const agenciaOrigenId = row.agencia_origen && typeof row.agencia_origen === 'string'
-        ? await obtenerOcrear(
+      ? row.agencia_origen.toLowerCase() === 'ti' || row.agencia_origen.toLowerCase() === 't.i' ||  row.agencia_origen.toLowerCase() === 'ti src'
+        ? 5  
+        : await obtenerOcrear(
             'agencias',
             'codigo',
             isNumeric(row.agencia_origen.split(' ')[0])
               ? row.agencia_origen.split(' ')[0]
               : '5',
-            { nombre: row.agencia_origen.split(' ').slice(1).join(' ') }
+            
           )
         : 5;
 
@@ -122,15 +150,12 @@ export const importarInventario = async (req: Request, res: Response) => {
             )
         : 5;
 
-      // Determinar el estado
       let estadoId = row.estado && estadoMap[row.estado] ? estadoMap[row.estado] : 1;
 
-      // Si agencia_actual indica "obsoleto", forzar estado a 4
       if (row.agencia_actual && row.agencia_actual.toLowerCase().includes('obsoleto')) {
         estadoId = 4;
       }
 
-      // Verificar si ya existe un registro con el mismo código o serie
       const [existingRecord] = await pool.query<RowDataPacket[]>(
         `SELECT 1 
           FROM inventario 
@@ -143,7 +168,6 @@ export const importarInventario = async (req: Request, res: Response) => {
         continue;
       }
 
-      // Insertar el inventario con el código procesado
       await pool.query(
         `INSERT INTO inventario 
           (codigo, serie, tipo_inventario_id, marca_id, modelo_id, agencias_id_origen, agencias_id_actual, estado_id, usuario_id, comentarios)
@@ -158,7 +182,7 @@ export const importarInventario = async (req: Request, res: Response) => {
           agenciaActualId,
           estadoId,
           userId,
-          row.comentarios || null,
+          row.comentarios || '',
         ]
       );
     }

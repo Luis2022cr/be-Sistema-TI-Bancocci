@@ -14,7 +14,7 @@ import { getEstadoAgencias } from '../controllers/estadoAgenciasController';
 import { actualizarAgencias, crearAgencias, getAgencias, getAgenciasById } from '../controllers/agenciasController';
 import { actualizarDirectorio, crearDirectorio, eliminarDirectorio, getDirectorios, getDirectoriosById } from '../controllers/directorioController';
 import { getUps, crearUps, actualizarUps, eliminarUps, getUpsPorIdConHistorial, getUpsSelect, getcalendarUPS, getUpsById } from '../controllers/upsController';
-import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, eliminarInventario, getInventarioPorIdConHistorial, getInventariosPorTipoConHistorial, getInventarioPorEstadoOnsoleto } from '../controllers/inventariosController';
+import { getInventarios, getInventarioPorId, crearInventario, actualizarInventario, getInventarioPorIdConHistorial, getInventariosPorTipoConHistorial, getInventarioPorEstadoOnsoleto } from '../controllers/inventariosController';
 import { actualizarModelo, crearModelo, getModelo, getModeloById } from '../controllers/modeloController';
 import { getUpsMapa, createUpsMapa, deleteUpsMapa } from '../controllers/mapaController';
 import { actualizarHistorialCambioInventario, crearHistorialCambioInventario, obtenerHistorialCambioInventario } from '../controllers/historialCambioInventarioController';
@@ -119,7 +119,6 @@ router.get('/inventarios/:id', getInventarioPorId);
 router.get('/inventario/:id', getInventarioPorIdConHistorial); 
 router.post('/inventarios',authenticateJWT, crearInventario);
 router.put('/inventarios/:id',authenticateJWT, actualizarInventario);
-router.patch('/inventarios/:id/estado', eliminarInventario);
 router.get('/inventarios/:tipo_inventario_id/historial', getInventariosPorTipoConHistorial);
 
 // Rutas para historial_cambio_inventario
