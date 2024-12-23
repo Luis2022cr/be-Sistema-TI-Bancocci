@@ -12,37 +12,37 @@
     <pre><code>?tipo_tamano_id={id}</code></pre>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-GET: /api/v1/ups
-GET: /api/v1/ups?tipo_tamano_id=2
+    GET: /api/v1/ups
+    GET: /api/v1/ups?tipo_tamano_id=2
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-[
-    {
-        "id": 1,
-        "nombre": "UPS A",
-        "modelo": "Modelo X",
-        "direccion_ip": "192.168.1.1",
-        "kva": 10,
-        "fecha_instalacion": "2024-01-01",
-        "años_uso": 2,
-        "proximo_cambio": "2025-01-01",
-        "modulos": 2,
-        "baterias": 4,
-        "observacion": "Funciona correctamente",
-        "agencia": "Agencia Central",
-        "estado_ups": "Activo",
-        "tipo_tamano": "Grande"
-    }
-]
+    [
+        {
+            "id": 1,
+            "nombre": "UPS A",
+            "modelo": "Modelo X",
+            "direccion_ip": "192.168.1.1",
+            "kva": 10,
+            "fecha_instalacion": "2024-01-01",
+            "años_uso": 2,
+            "proximo_cambio": "2025-01-01",
+            "modulos": 2,
+            "baterias": 4,
+            "observacion": "Funciona correctamente",
+            "agencia": "Agencia Central",
+            "estado_ups": "Activo",
+            "tipo_tamano": "Grande"
+        }
+    ]
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al obtener las UPS"
-}
+    {
+        "error": "Error al obtener las UPS"
+    }
         </code></pre>
       </li>
     </ul>
@@ -59,41 +59,41 @@ GET: /api/v1/ups?tipo_tamano_id=2
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-GET: /api/v1/ups/1
+    GET: /api/v1/ups/1
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "id": 1,
-    "nombre": "UPS A",
-    "modelo": "Modelo X",
-    "direccion_ip": "192.168.1.1",
-    "kva": 10,
-    "fecha_instalacion": "2024-01-01",
-    "años_uso": 2,
-    "proximo_cambio": "2025-01-01",
-    "modulos": 2,
-    "baterias": 4,
-    "observacion": "Funciona correctamente",
-    "agencia": "Agencia Central",
-    "estado_ups": "Activo",
-    "tipo_tamano": "Grande"
-}
+    {
+        "id": 1,
+        "nombre": "UPS A",
+        "modelo": "Modelo X",
+        "direccion_ip": "192.168.1.1",
+        "kva": 10,
+        "fecha_instalacion": "2024-01-01",
+        "años_uso": 2,
+        "proximo_cambio": "2025-01-01",
+        "modulos": 2,
+        "baterias": 4,
+        "observacion": "Funciona correctamente",
+        "agencia": "Agencia Central",
+        "estado_ups": "Activo",
+        "tipo_tamano": "Grande"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>404 Not Found:</code></strong> Si la UPS con el ID proporcionado no existe.
         <pre><code>
-{
-    "error": "UPS no encontrada"
-}
+    {
+        "error": "UPS no encontrada"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al obtener la UPS"
-}
+    {
+        "error": "Error al obtener la UPS"
+    }
         </code></pre>
       </li>
     </ul>
@@ -110,43 +110,43 @@ GET: /api/v1/ups/1
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-POST: /api/v1/ups
-Body: {
-    "nombre": "UPS B",
-    "modelo": "Modelo Y",
-    "direccion_ip": "192.168.1.2",
-    "kva": 15,
-    "fecha_instalacion": "2024-02-01",
-    "años_uso": 1,
-    "proximo_cambio": "2025-02-01",
-    "modulos": 3,
-    "baterias": 6,
-    "agencias_id": 1,
-    "estado_ups_id": 1,
-    "tipo_tamano_id": 1,
-    "observacion": "Nuevo equipo"
-}
+    POST: /api/v1/ups
+    Body: {
+        "nombre": "UPS B",
+        "modelo": "Modelo Y",
+        "direccion_ip": "192.168.1.2",
+        "kva": 15,
+        "fecha_instalacion": "2024-02-01",
+        "años_uso": 1,
+        "proximo_cambio": "2025-02-01",
+        "modulos": 3,
+        "baterias": 6,
+        "agencias_id": 1,
+        "estado_ups_id": 1,
+        "tipo_tamano_id": 1,
+        "observacion": "Nuevo equipo"
+    }
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "message": "UPS creada exitosamente"
-}
+    {
+        "message": "UPS creada exitosamente"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
         <pre><code>
-{
-    "error": "Todos los campos son obligatorios"
-}
+    {
+        "error": "Todos los campos son obligatorios"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al crear la UPS"
-}
+    {
+        "error": "Error al crear la UPS"
+    }
         </code></pre>
       </li>
     </ul>
@@ -163,91 +163,52 @@ Body: {
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-PUT: /api/v1/ups/1
-Body: {
-    "nombre": "UPS A",
-    "modelo": "Modelo X actualizado",
-    "direccion_ip": "192.168.1.1",
-    "kva": 10,
-    "fecha_instalacion": "2024-01-01",
-    "años_uso": 3,
-    "proximo_cambio": "2025-01-01",
-    "modulos": 2,
-    "baterias": 4,
-    "agencias_id": 1,
-    "estado_ups_id": 1,
-    "tipo_tamano_id": 1,
-    "observacion": "Actualización de equipo"
-}
+    PUT: /api/v1/ups/1
+    Body: {
+        "nombre": "UPS A",
+        "modelo": "Modelo X actualizado",
+        "direccion_ip": "192.168.1.1",
+        "kva": 10,
+        "fecha_instalacion": "2024-01-01",
+        "años_uso": 3,
+        "proximo_cambio": "2025-01-01",
+        "modulos": 2,
+        "baterias": 4,
+        "agencias_id": 1,
+        "estado_ups_id": 1,
+        "tipo_tamano_id": 1,
+        "observacion": "Actualización de equipo"
+    }
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "message": "UPS actualizada exitosamente"
-}
+    {
+        "message": "UPS actualizada exitosamente"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
         <pre><code>
-{
-    "error": "Todos los campos son obligatorios"
-}
+    {
+        "error": "Todos los campos son obligatorios"
+    }
         </code></pre>
       </li>
       <li><strong><code>404 Not Found:</code></strong> Si la UPS con el ID proporcionado no existe.
         <pre><code>
-{
-    "error": "UPS no encontrada"
-}
+    {
+        "error": "UPS no encontrada"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al actualizar la UPS"
-}
+    {
+        "error": "Error al actualizar la UPS"
+    }
         </code></pre>
       </li>
     </ul>
   </ul>
 </details>
-
-<!-- PATCH: Eliminar (cambiar estado) una UPS -->
-<details>
-  <summary>PATCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /api/v1/ups/:id/estado</summary>
-  <ul>
-    <li><strong>Descripción:</strong> Cambia el estado de una UPS a inactiva.</li>
-    <br>
-    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID de la UPS como parámetro en la URL.</li>
-    <br>
-    <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre>
-    PATCH: /api/v1/ups/1
-    </pre>
-    <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre>
-{
-    "message": "UPS marcada como inactiva exitosamente"
-}
-    </pre>
-    <li><strong>Errores posibles:</strong></li>
-    <ul>
-      <li><strong><code>404 Not Found:</code></strong> Si la UPS no existe.
-        <pre><code>
-{
-    "error": "UPS no encontrada"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>500 Internal Server Error:</code></strong> En caso de error en la base de datos o en el servidor.
-        <pre><code>
-{
-    "error": "Error al inactivar la UPS"
-}
-        </code></pre>
-      </li>
-    </ul>
-  </ul>
-</details>
-

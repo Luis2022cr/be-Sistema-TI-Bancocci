@@ -12,36 +12,36 @@
     <pre><code>?tipo_inventario_id={id}</code></pre>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-GET: /api/v1/inventarios
-GET: /api/v1/inventarios?tipo_inventario_id=2
+    GET: /api/v1/inventarios
+    GET: /api/v1/inventarios?tipo_inventario_id=2
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-[
-    {
-        "id": 1,
-        "codigo": "INV001",
-        "serie": "SR12345",
-        "modelo": "Modelo X",
-        "comentarios": "Equipo en buen estado",
-        "fecha_creacion": "2024-10-04T14:48:00",
-        "fecha_modificacion": "2024-10-05T10:30:00",
-        "tipo_inventario": "Electrónica",
-        "marca": "Marca A",
-        "agencia_origen": "Agencia Central",
-        "agencia_actual": "Agencia Norte",
-        "estado": "Activo",
-        "usuario": "Juan Pérez"
-    }
-]
+    [
+        {
+            "id": 1,
+            "codigo": "INV001",
+            "serie": "SR12345",
+            "modelo": "Modelo X",
+            "comentarios": "Equipo en buen estado",
+            "fecha_creacion": "2024-10-04T14:48:00",
+            "fecha_modificacion": "2024-10-05T10:30:00",
+            "tipo_inventario": "Electrónica",
+            "marca": "Marca A",
+            "agencia_origen": "Agencia Central",
+            "agencia_actual": "Agencia Norte",
+            "estado": "Activo",
+            "usuario": "Juan Pérez"
+        }
+    ]
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al obtener los inventarios"
-}
+    {
+        "error": "Error al obtener los inventarios"
+    }
         </code></pre>
       </li>
     </ul>
@@ -58,40 +58,40 @@ GET: /api/v1/inventarios?tipo_inventario_id=2
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-GET: /api/v1/inventarios/1
+    GET: /api/v1/inventarios/1  
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "id": 1,
-    "codigo": "INV001",
-    "serie": "SR12345",
-    "modelo": "Modelo X",
-    "comentarios": "Equipo en buen estado",
-    "fecha_creacion": "2024-10-04T14:48:00",
-    "fecha_modificacion": "2024-10-05T10:30:00",
-    "tipo_inventario": "Electrónica",
-    "marca": "Marca A",
-    "agencia_origen": "Agencia Central",
-    "agencia_actual": "Agencia Norte",
-    "estado": "Activo",
-    "usuario": "Juan Pérez"
-}
+    {
+        "id": 1,
+        "codigo": "INV001",
+        "serie": "SR12345",
+        "modelo": "Modelo X",
+        "comentarios": "Equipo en buen estado",
+        "fecha_creacion": "2024-10-04T14:48:00",
+        "fecha_modificacion": "2024-10-05T10:30:00",
+        "tipo_inventario": "Electrónica",
+        "marca": "Marca A",
+        "agencia_origen": "Agencia Central",
+        "agencia_actual": "Agencia Norte",
+        "estado": "Activo",
+        "usuario": "Juan Pérez"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>404 Not Found:</code></strong> Si el inventario con el ID proporcionado no existe.
         <pre><code>
-{
-    "error": "Inventario no encontrado"
-}
+    {
+        "error": "Inventario no encontrado"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al obtener el inventario"
-}
+    {
+        "error": "Error al obtener el inventario"
+    }
         </code></pre>
       </li>
     </ul>
@@ -108,39 +108,39 @@ GET: /api/v1/inventarios/1
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-POST: /api/v1/inventarios
-Body: {
-    "codigo": "INV002",
-    "serie": "SR54321",
-    "tipo_inventario_id": 1,
-    "marca_id": 2,
-    "modelo": "Modelo Y",
-    "agencias_id_origen": 1,
-    "agencias_id_actual": 2,
-    "estado_id": 1,
-    "comentarios": "Nuevo equipo"
-}
+    POST: /api/v1/inventarios
+    Body: {
+        "codigo": "INV002",
+        "serie": "SR54321",
+        "tipo_inventario_id": 1,
+        "marca_id": 2,
+        "modelo": "Modelo Y",
+        "agencias_id_origen": 1,
+        "agencias_id_actual": 2,
+        "estado_id": 1,
+        "comentarios": "Nuevo equipo"
+    }
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "message": "Inventario creado exitosamente"
-}
+    {
+        "message": "Inventario creado exitosamente"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
         <pre><code>
-{
-    "error": "Todos los campos son obligatorios"
-}
+    {
+        "error": "Todos los campos son obligatorios"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al crear el inventario"
-}
+    {
+        "error": "Error al crear el inventario"
+    }
         </code></pre>
       </li>
     </ul>
@@ -157,84 +157,46 @@ Body: {
     <br>
     <li><strong>Ejemplo de solicitud:</strong></li>
     <pre><code>
-PUT: /api/v1/inventarios/1
-Body: {
-    "codigo": "INV001",
-    "serie": "SR12345",
-    "tipo_inventario_id": 1,
-    "marca_id": 2,
-    "modelo": "Modelo X actualizado",
-    "agencias_id_origen": 1,
-    "agencias_id_actual": 3,
-    "estado_id": 1,
-    "comentarios": "Actualización de equipo"
-}
+    PUT: /api/v1/inventarios/1
+    Body: {
+        "codigo": "INV001",
+        "serie": "SR12345",
+        "tipo_inventario_id": 1,
+        "marca_id": 2,
+        "modelo": "Modelo X actualizado",
+        "agencias_id_origen": 1,
+        "agencias_id_actual": 3,
+        "estado_id": 1,
+        "comentarios": "Actualización de equipo"
+    }
     </code></pre>
     <li><strong>Ejemplo de respuesta:</strong></li>
     <pre><code>
-{
-    "message": "Inventario actualizado exitosamente"
-}
+    {
+        "message": "Inventario actualizado exitosamente"
+    }
     </code></pre>
     <li><strong>Errores posibles:</strong></li>
     <ul>
       <li><strong><code>400 Bad Request:</code></strong> Si falta alguno de los campos requeridos.
         <pre><code>
-{
-    "error": "Todos los campos son obligatorios"
-}
+    {
+        "error": "Todos los campos son obligatorios"
+    }
         </code></pre>
       </li>
       <li><strong><code>404 Not Found:</code></strong> Si el inventario con el ID proporcionado no existe.
         <pre><code>
-{
-    "error": "Inventario no encontrado"
-}
+    {
+        "error": "Inventario no encontrado"
+    }
         </code></pre>
       </li>
       <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
         <pre><code>
-{
-    "error": "Error al actualizar el inventario"
-}
-        </code></pre>
-      </li>
-    </ul>
-  </ul>
-</details>
-
-<!-- PATCH: Eliminar (cambiar estado) un inventario -->
-<details>
-  <summary>PATCH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/api/v1/inventarios/:id/estado</summary>
-  <ul>
-    <li><strong>Descripción:</strong> Marca un inventario como inactivo cambiando su estado.</li>
-    <br>
-    <li><strong>Instrucciones:</strong> Se debe proporcionar el ID del inventario como parámetro en la URL.</li>
-    <br>
-    <li><strong>Ejemplo de solicitud:</strong></li>
-    <pre><code>
-PATCH: /api/v1/inventarios/1/estado
-    </code></pre>
-    <li><strong>Ejemplo de respuesta:</strong></li>
-    <pre><code>
-{
-    "message": "Inventario marcado como inactivo exitosamente"
-}
-    </code></pre>
-    <li><strong>Errores posibles:</strong></li>
-    <ul>
-      <li><strong><code>404 Not Found:</code></strong> Si el inventario con el ID proporcionado no existe.
-        <pre><code>
-{
-    "error": "Inventario no encontrado"
-}
-        </code></pre>
-      </li>
-      <li><strong><code>500 Internal Server Error:</code></strong> Error en la base de datos o en el servidor.
-        <pre><code>
-{
-    "error": "Error al inactivar el inventario"
-}
+    {
+        "error": "Error al actualizar el inventario"
+    }
         </code></pre>
       </li>
     </ul>
